@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../providers/AppProvider";
 import apiClient from "../../api/apiClient";
@@ -555,57 +555,55 @@ function NotFoundPage() {
 
 export default function AppRouter() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DashboardPage />} />
+    <Routes>
+      <Route path="/" element={<DashboardPage />} />
 
-        <Route
-          path="/login"
-          element={
-            <PublicOnlyRoute>
-              <LoginPage />
-            </PublicOnlyRoute>
-          }
-        />
+      <Route
+        path="/login"
+        element={
+          <PublicOnlyRoute>
+            <LoginPage />
+          </PublicOnlyRoute>
+        }
+      />
 
-        <Route
-          path="/register"
-          element={
-            <PublicOnlyRoute>
-              <RegisterPage />
-            </PublicOnlyRoute>
-          }
-        />
+      <Route
+        path="/register"
+        element={
+          <PublicOnlyRoute>
+            <RegisterPage />
+          </PublicOnlyRoute>
+        }
+      />
 
-        <Route
-          path="/products"
-          element={
-            <ProtectedRoute>
-              <ProductsPage />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        path="/products"
+        element={
+          <ProtectedRoute>
+            <ProductsPage />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <OrdersPage />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        path="/orders"
+        element={
+          <ProtectedRoute>
+            <OrdersPage />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route
-          path="/deliveries"
-          element={
-            <ProtectedRoute>
-              <DeliveriesPage />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        path="/deliveries"
+        element={
+          <ProtectedRoute>
+            <DeliveriesPage />
+          </ProtectedRoute>
+        }
+      />
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
 }
