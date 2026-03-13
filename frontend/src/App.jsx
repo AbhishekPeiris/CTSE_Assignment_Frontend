@@ -1,16 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import AppRouter from "./app/router/AppRouter";
+import { AppProvider } from "./app/providers/AppProvider";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <h1 className='text-2xl bg-red-400'>Vite + React</h1>
-    </>
-  )
+    <AppProvider>
+      <AppRouter />
+    </AppProvider>
+  );
 }
-
-export default App

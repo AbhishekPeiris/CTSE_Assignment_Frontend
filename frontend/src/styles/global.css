@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --ctse-bg-top: #e8f0fe;
+  --ctse-bg-mid: #f8f9fc;
+  --ctse-bg-bottom: #f1f3f4;
+  --ctse-text: #202124;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  font-family: "Manrope", "Segoe UI", "Helvetica Neue", sans-serif;
+  color: var(--ctse-text);
+  background: radial-gradient(
+    circle at 15% 0%,
+    var(--ctse-bg-top) 0%,
+    var(--ctse-bg-mid) 50%,
+    var(--ctse-bg-bottom) 100%
+  );
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: #d2e3fc;
+  color: #1f2937;
+}
