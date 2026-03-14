@@ -25,11 +25,14 @@ export default function OrderCard({
         User: {order?.userId || order?.user?._id || order?.user?.id || "N/A"}
       </p>
       <p className="mt-1 text-sm text-[#1f2937]">
-        Total: {formatMoney(order?.totalAmount || order?.amount || order?.total)}
+        Total:{" "}
+        {formatMoney(order?.totalAmount || order?.amount || order?.total)}
       </p>
-      <p className="mt-1 text-xs text-[#6b7280]">Created: {formatDate(order?.createdAt)}</p>
+      <p className="mt-1 text-xs text-[#6b7280]">
+        Created: {formatDate(order?.createdAt)}
+      </p>
 
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 mt-3">
         <Link to={`/orders/${orderId}`}>
           <Button variant="secondary" size="sm">
             View Details
@@ -38,7 +41,7 @@ export default function OrderCard({
       </div>
 
       {canUpdateStatus ? (
-        <div className="mt-3 flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-3">
           <select
             value={statusDraft || currentStatus}
             onChange={(event) => onStatusChange(orderId, event.target.value)}
@@ -51,7 +54,10 @@ export default function OrderCard({
             ))}
           </select>
 
-          <Button size="sm" onClick={() => onUpdateStatus(orderId, currentStatus)}>
+          <Button
+            size="sm"
+            onClick={() => onUpdateStatus(orderId, currentStatus)}
+          >
             Update
           </Button>
         </div>

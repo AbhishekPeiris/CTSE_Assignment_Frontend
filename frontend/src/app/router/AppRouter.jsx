@@ -8,9 +8,9 @@ import Register from "../../features/auth/pages/Register";
 import Dashboard from "../../features/dashboard/pages/Dashboard";
 import ProductList from "../../features/products/pages/ProductList";
 import ProductDetails from "../../features/products/pages/ProductDetails";
-import OrderList from "../../features/orders/pages/OrderList";
 import OrderDetails from "../../features/orders/pages/OrderDetails";
 import DeliveryList from "../../features/deliveries/pages/DeliveryList";
+import OrderPage from "../../features/orders/pages/OrderPage";
 
 export default function AppRouter() {
   return (
@@ -25,7 +25,7 @@ export default function AppRouter() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/orders" element={<OrderList />} />
+        <Route path="/orders" element={<OrderPage />} />
         <Route path="/orders/:id" element={<OrderDetails />} />
         <Route path="/deliveries" element={<DeliveryList />} />
         <Route path="*" element={<NotFoundPage />} />
