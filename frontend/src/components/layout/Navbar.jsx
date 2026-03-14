@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/providers/AppProvider";
+import { LOGO } from "../../assets";
 
 export default function Navbar({ health }) {
   const { auth, logout } = useAppContext();
@@ -16,15 +17,12 @@ export default function Navbar({ health }) {
     <header className="sticky top-0 z-30 border-b border-[#e7ebf3] bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-[1260px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div>
-          <h1 className="text-lg font-semibold tracking-tight text-[#1f2937]">
-            CTSE Ops Dashboard
-          </h1>
-          <p className="text-xs text-[#5f6368]">Live API Connected</p>
+         <img src={LOGO} alt="CTSE Logo" className="object-contain h-auto mx-auto w-60" />
         </div>
 
         <div className="hidden w-full max-w-md sm:block">
           <div className="rounded-full border border-[#e5e7eb] bg-[#f8fafd] px-4 py-2 text-sm text-[#6b7280]">
-            API Gateway: 104.43.50.123
+            Search Product...
           </div>
         </div>
 

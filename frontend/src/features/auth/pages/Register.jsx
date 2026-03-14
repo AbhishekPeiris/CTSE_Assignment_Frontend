@@ -4,6 +4,7 @@ import Card from "../../../components/ui/Card";
 import RegisterForm from "../components/RegisterForm";
 import { useAuth } from "../authSlice";
 import { getTokenFromAuthPayload } from "../../../utils/helpers";
+import { LOGO } from "../../../assets";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ export default function Register() {
     <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_#e8f0fe_0%,_#f8f9fc_45%,_#f1f3f4_100%)] px-4 py-10">
       <div className="w-full max-w-xl space-y-4">
         <div className="text-center">
-          <h1 className="text-3xl font-semibold text-[#1f2937]">Create CTSE Account</h1>
+          <img src={LOGO} alt="CTSE Logo" className="object-contain h-auto mx-auto w-60" />
           <p className="mt-2 text-sm text-[#5f6368]">
             Register a role to access microservice operations.
           </p>

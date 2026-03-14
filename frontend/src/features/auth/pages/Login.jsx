@@ -3,6 +3,7 @@ import { useState } from "react";
 import Card from "../../../components/ui/Card";
 import LoginForm from "../components/LoginForm";
 import { useAuth } from "../authSlice";
+import { LOGO } from "../../../assets";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -44,13 +45,13 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_#e8f0fe_0%,_#f8f9fc_45%,_#f1f3f4_100%)] px-4 py-10">
       <div className="w-full max-w-xl space-y-4">
         <div className="text-center">
-          <h1 className="text-3xl font-semibold text-[#1f2937]">CTSE Operations</h1>
+          <img src={LOGO} alt="CTSE Logo" className="object-contain h-auto mx-auto w-60" />
           <p className="mt-2 text-sm text-[#5f6368]">
             Secure access to products, orders, and delivery control.
           </p>
         </div>
 
-        <Card title="Sign In" subtitle="Authenticate with your live gateway credentials">
+        <Card title="Sign In" subtitle="Authenticate with your Admin portal credentials">
           <LoginForm
             form={form}
             onChange={handleChange}
