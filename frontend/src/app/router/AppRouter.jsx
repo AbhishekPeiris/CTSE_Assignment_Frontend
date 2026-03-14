@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import AppShell from "../../components/layout/AppShell";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicOnlyRoute from "./PublicOnlyRoute";
@@ -11,6 +11,7 @@ import ProductDetails from "../../features/products/pages/ProductDetails";
 import OrderDetails from "../../features/orders/pages/OrderDetails";
 import DeliveryList from "../../features/deliveries/pages/DeliveryList";
 import OrderPage from "../../features/orders/pages/OrderPage";
+import OrderList from "../../features/orders/components/OrderList";
 
 export default function AppRouter() {
   return (
@@ -25,7 +26,9 @@ export default function AppRouter() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/orders" element={<OrderPage />} />
+        <Route path="/orders" element={<Navigate to="/orders/sales" replace />} />
+        <Route path="/orders/sales" element={<OrderPage />} />
+        <Route path="/orders/history" element={<OrderList />} />
         <Route path="/orders/:id" element={<OrderDetails />} />
         <Route path="/deliveries" element={<DeliveryList />} />
         <Route path="*" element={<NotFoundPage />} />
