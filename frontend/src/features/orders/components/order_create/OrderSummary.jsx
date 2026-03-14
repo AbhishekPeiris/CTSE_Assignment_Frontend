@@ -17,55 +17,52 @@ const OrderSummary = ({
   clearOrderDesk,
   createLoading,
 }) => (
-  <aside className="rounded-[24px] bg-[#1a3227] p-4 text-white lg:p-5">
-    <div className="rounded-[22px] border border-white/10 bg-white/6 p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#c9d8cf]">
+  <aside className="rounded-[24px] bg-white p-4 text-label lg:p-5">
+    <div className="rounded-[22px] border border-line bg-white/6 p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-label">
         Active Ticket
       </p>
       <div className="grid gap-3 mt-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-        <div className="px-4 py-3 rounded-2xl bg-white/10">
-          <p className="text-xs uppercase tracking-[0.18em] text-[#bdd0c4]">
+        <div className="px-4 py-3 rounded-2xl bg-black/10">
+          <p className="text-xs uppercase tracking-[0.18em] text-word">
             Lines
           </p>
-          <p className="mt-2 text-2xl font-semibold">{cartSummary.itemCount}</p>
+          <p className="mt-2 text-sm font-semibold">{cartSummary.itemCount}</p>
         </div>
-        <div className="px-4 py-3 rounded-2xl bg-white/10">
-          <p className="text-xs uppercase tracking-[0.18em] text-[#bdd0c4]">
+        <div className="px-4 py-3 rounded-2xl bg-black/10">
+          <p className="text-xs uppercase tracking-[0.18em] text-word">
             Units
           </p>
-          <p className="mt-2 text-2xl font-semibold">{cartSummary.units}</p>
+          <p className="mt-2 text-sm font-semibold">{cartSummary.units}</p>
         </div>
-        <div className="rounded-2xl bg-[#f3c96b] px-4 py-3 text-[#2d2413]">
+        <div className="rounded-2xl bg-primary/10 px-4 py-3 text-[#2d2413]">
           <p className="text-xs uppercase tracking-[0.18em] text-[#6b5221]">
             Subtotal
           </p>
-          <p className="mt-2 text-2xl font-semibold">
+          <p className="mt-2 text-sm font-semibold">
             {formatMoney(cartSummary.subtotal)}
           </p>
         </div>
       </div>
     </div>
     <form onSubmit={handleCreateOrder} className="mt-5 space-y-4">
-      <div className="rounded-[22px] border border-white/10 bg-white/6 p-4">
+      <div className="rounded-[22px] border border-line bg-white/6 p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg font-semibold">Admin Order Desk</h3>
-            <p className="mt-1 text-sm text-[#c6d3cb]">
-              Build the customer order, review each selected item, then submit.
-            </p>
+            <h3 className="font-semibold text-md">Admin Order Desk</h3>
           </div>
           <Button
             type="button"
             variant="ghost"
             onClick={clearOrderDesk}
-            className="px-4 py-2 text-white border rounded-2xl border-white/15 hover:bg-white/10"
+            className="border rounded-full text-label border-line hover:bg-gray-50"
           >
             Clear
           </Button>
         </div>
         <div className="mt-4 space-y-3">
           {cartItems.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-white/15 px-4 py-8 text-center text-sm text-[#cad7d0]">
+            <div className="rounded-2xl border border-dashed border-linepx-4 py-8 text-center text-sm text-word]">
               No products selected yet. Add products from the catalog to start
               the order.
             </div>
@@ -73,36 +70,36 @@ const OrderSummary = ({
             cartItems.map((item) => (
               <div
                 key={item.productId}
-                className="rounded-2xl border border-white/10 bg-[#223d31] p-4"
+                className="p-4 border bg-success rounded-2xl border-line"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-white">
+                            <p className="text-sm font-semibold text-warning">
                       {item.name}
                     </p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[#a7beb1]">
+                            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-white">
                       {item.category}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeCartItem(item.productId)}
-                    className="text-xs font-semibold uppercase tracking-[0.14em] text-[#ffb4b4] transition hover:text-white"
+                    className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-200 transition hover:text-label"
                   >
                     Remove
                   </button>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-3 mt-4">
-                  <div className="rounded-full border border-white/10 px-3 py-1 text-xs text-[#cbd7d1]">
+                  <div className="px-3 py-1 text-xs text-white border rounded-full border-line">
                     {item.status}
                   </div>
-                  <div className="flex items-center gap-2 p-1 border rounded-full border-white/10 bg-white/5">
+                  <div className="flex items-center gap-2 p-1 border rounded-full border-line bg-black/5">
                     <button
                       type="button"
                       onClick={() =>
                         updateCartQuantity(item.productId, item.quantity - 1)
                       }
-                      className="w-8 h-8 text-lg text-white transition rounded-full hover:bg-white/10"
+                                className="w-8 h-8 text-lg text-white transition rounded-full hover:bg-warning/90"
                     >
                       -
                     </button>
@@ -120,13 +117,13 @@ const OrderSummary = ({
                       onClick={() =>
                         updateCartQuantity(item.productId, item.quantity + 1)
                       }
-                      className="w-8 h-8 text-lg text-white transition rounded-full hover:bg-white/10"
+                                className="w-8 h-8 text-lg text-white transition rounded-full hover:bg-warning"
                     >
                       +
                     </button>
                   </div>
                 </div>
-                <div className="mt-4 flex items-center justify-between text-sm text-[#c6d3cb]">
+                <div className="flex items-center justify-between mt-4 text-sm text-gray-300">
                   <span>{formatMoney(item.price)} each</span>
                   <span className="font-semibold text-white">
                     {formatMoney(item.price * item.quantity)}
@@ -137,8 +134,8 @@ const OrderSummary = ({
           )}
         </div>
       </div>
-      <div className="rounded-[22px] border border-white/10 bg-white/6 p-4">
-        <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#d4e0d9]">
+      <div className="rounded-[22px] border border-line bg-white/6 p-4">
+        <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-label">
           Customer Context
         </h4>
         <div className="grid gap-3 mt-4">
@@ -148,8 +145,8 @@ const OrderSummary = ({
             value={customerDetails.customerName}
             onChange={handleCustomerChange}
             placeholder="Order label for staff"
-            inputClassName="rounded-2xl border-white/10 bg-white/8 px-4 py-3 text-white placeholder:text-[#9db2a6]"
-            className="[&>label]:text-[#dce7e0]"
+            inputClassName="rounded-2xl border-line bg-white/8 px-4 py-3 text-label placeholder:text-[#9db2a6]"
+            className="[&>label]:text-word"
           />
           <Input
             label="Contact number"
@@ -157,13 +154,13 @@ const OrderSummary = ({
             value={customerDetails.contactNumber}
             onChange={handleCustomerChange}
             placeholder="Optional contact"
-            inputClassName="rounded-2xl border-white/10 bg-white/8 px-4 py-3 text-white placeholder:text-[#9db2a6]"
-            className="[&>label]:text-[#dce7e0]"
+            inputClassName="rounded-2xl border-line bg-white/8 px-4 py-3 text-label placeholder:text-[#9db2a6]"
+            className="[&>label]:text-word"
           />
           <div>
             <label
               htmlFor="order-note"
-              className="mb-1 block text-sm font-medium text-[#dce7e0]"
+              className="block mb-1 text-sm font-medium text-word"
             >
               Order note
             </label>
@@ -174,16 +171,16 @@ const OrderSummary = ({
               value={customerDetails.orderNote}
               onChange={handleCustomerChange}
               placeholder="Packing notes, pickup instructions, customer purpose"
-              className="w-full rounded-2xl border border-white/10 bg-white/8 px-4 py-3 text-sm text-white outline-none transition placeholder:text-[#9db2a6] focus:border-[#86bf9f] focus:ring-2 focus:ring-[#284d3c]"
+              className="w-full rounded-2xl border border-line bg-white/8 px-4 py-3 text-sm text-label outline-none transition placeholder:text-[#9db2a6]"
             />
           </div>
         </div>
       </div>
-      <div className="rounded-[22px] border border-white/10 bg-white/6 p-4">
-        <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#d4e0d9]">
+      <div className="rounded-[22px] border border-line bg-white/6 p-4">
+        <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-label">
           Advanced Payload
         </h4>
-        <p className="mt-2 text-sm text-[#c6d3cb]">
+        <p className="mt-2 text-sm text-[#54645d]">
           Optional. Add extra API fields as JSON. If you provide `items`, that
           custom list will be used.
         </p>
@@ -194,13 +191,13 @@ const OrderSummary = ({
           value={customPayload}
           onChange={(event) => setCustomPayload(event.target.value)}
           placeholder='{"customerId":"...", "priority":"HIGH"}'
-          className="mt-3 w-full rounded-2xl border border-white/10 bg-white/8 px-4 py-3 text-sm text-white outline-none transition placeholder:text-[#9db2a6] focus:border-[#86bf9f] focus:ring-2 focus:ring-[#284d3c]"
+          className="mt-3 w-full rounded-2xl border border-line bg-white/8 px-4 py-3 text-sm text-label outline-none transition placeholder:text-[#9db2a6]"
         />
       </div>
       <Button
         type="submit"
         disabled={createLoading || cartItems.length === 0}
-        className="w-full rounded-2xl bg-[#f3c96b] px-5 py-3 text-sm font-semibold text-[#2d2413] shadow-none hover:bg-[#e7bb59]"
+        className="w-full px-5 py-3 text-sm font-semibold text-white rounded-full shadow-none bg-primary hover:bg-primary/80"
       >
         {createLoading ? "Creating order..." : "Create customer order"}
       </Button>
