@@ -9,6 +9,7 @@ export default function LoginForm({ form, onChange, onSubmit, loading, error }) 
         label="Email"
         type="email"
         name="email"
+        placeholder="Enter your email"
         value={form.email}
         required
         autoComplete="email"
@@ -19,6 +20,7 @@ export default function LoginForm({ form, onChange, onSubmit, loading, error }) 
         label="Password"
         type="password"
         name="password"
+        placeholder="Enter your password"
         value={form.password}
         required
         autoComplete="current-password"

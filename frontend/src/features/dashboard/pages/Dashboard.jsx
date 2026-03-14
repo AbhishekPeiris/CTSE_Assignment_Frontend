@@ -202,7 +202,7 @@ export default function Dashboard() {
           <ErrorMessage message={state.error} />
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-4 mt-6 md:grid-cols-2 xl:grid-cols-5">
           <MetricCard label="Role" value={role || "Guest"} helper="Current access profile" />
           <MetricCard label="Products" value={String(state.products.length)} helper="Catalog count" />
           <MetricCard label="Orders" value={String(state.orders.length)} helper="Loaded order records" />
@@ -219,7 +219,7 @@ export default function Dashboard() {
         </div>
       </Card>
 
-      <div className="grid gap-5 xl:grid-cols-2">
+      <div className="grid gap-2 xl:grid-cols-2">
         <Card title="My Orders (Auth Route)">
           <div className="flex items-center justify-between gap-3">
             <p className="text-sm text-[#5f6368]">Fetch orders from /auth/me/orders</p>

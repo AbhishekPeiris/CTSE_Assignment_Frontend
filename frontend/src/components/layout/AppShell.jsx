@@ -11,11 +11,11 @@ export default function AppShell() {
     <div className="min-h-screen bg-[#f6f8fc] text-[#202124]">
       <Navbar health={health} />
 
-      <div className="mx-auto grid w-full max-w-[1260px] gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:px-8">
+      <div className="mx-auto grid w-full max-w-full gap-2 py-2 sm:px-2 lg:grid-cols-[220px_minmax(0,1fr)] lg:px-2">
         <Sidebar />
 
         <div className="flex min-h-[calc(100vh-144px)] flex-col gap-5">
-          <main className="flex-1 space-y-5">
+          <main className="flex-1 space-y-2">
             <Outlet />
           </main>
           <Footer />

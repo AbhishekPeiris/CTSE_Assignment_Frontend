@@ -9,6 +9,7 @@ export default function RegisterForm({ form, onChange, onSubmit, loading, error 
         label="Name"
         type="text"
         name="name"
+        placeholder="Enter your name"
         value={form.name}
         required
         autoComplete="name"
@@ -19,6 +20,7 @@ export default function RegisterForm({ form, onChange, onSubmit, loading, error 
         label="Email"
         type="email"
         name="email"
+        placeholder="Enter your email"
         value={form.email}
         required
         autoComplete="email"
@@ -29,6 +31,7 @@ export default function RegisterForm({ form, onChange, onSubmit, loading, error 
         label="Password"
         type="password"
         name="password"
+        placeholder="Enter your password"
         value={form.password}
         required
         autoComplete="new-password"
@@ -46,9 +49,9 @@ export default function RegisterForm({ form, onChange, onSubmit, loading, error 
           onChange={onChange}
           className="w-full rounded-xl border border-[#d9dde8] bg-white px-3 py-2.5 text-sm text-[#1f2937] outline-none transition focus:border-[#1a73e8] focus:ring-2 focus:ring-[#d2e3fc]"
         >
-          <option value="USER">USER</option>
+          {/* <option value="USER">USER</option> */}
           <option value="ADMIN">ADMIN</option>
-          <option value="DELIVERY">DELIVERY</option>
+          {/* <option value="DELIVERY">DELIVERY</option> */}
         </select>
       </div>
 
