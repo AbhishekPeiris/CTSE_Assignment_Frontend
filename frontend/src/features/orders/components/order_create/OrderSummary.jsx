@@ -243,7 +243,7 @@ const OrderSummary = ({
             className="[&>label]:text-word"
           />
         </div>
-        {/* <ErrorMessage message={customerDirectoryError} /> */}
+        <ErrorMessage message={customerDirectoryError} />
         {renderCustomerMeta(
           selectedCustomer
             ? { ...selectedCustomer, onClear: clearSelectedCustomer }

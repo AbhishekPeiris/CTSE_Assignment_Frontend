@@ -11,13 +11,22 @@ export const ROLES = {
 
 export const ORDER_STATUS = {
     PENDING: "PENDING",
-    PROCESSING: "PROCESSING",
+    CONFIRMED: "CONFIRMED",
+    SHIPPED: "SHIPPED",
     DELIVERED: "DELIVERED",
+    CANCELLED: "CANCELLED",
 };
+
+export const ORDER_STATUS_FLOW = [
+    "PENDING",
+    "CONFIRMED",
+    "SHIPPED",
+    "DELIVERED",
+    "CANCELLED",
+];
 
 export const ORDER_STATUS_OPTIONS = [
     "PENDING",
-    "PROCESSING",
     "CONFIRMED",
     "SHIPPED",
     "DELIVERED",
