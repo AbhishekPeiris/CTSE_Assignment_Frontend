@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState } from "react";
 import { OrderService } from "../../services/order.service";
+import { asCollection, asEntity } from "../../utils/helpers";
 
 const OrderContext = createContext();
 
@@ -11,12 +12,12 @@ export const OrderProvider = ({ children }) => {
 
   const loadOrders = async () => {
     const data = await OrderService.getAllOrders();
-    setOrders(data.orders || data);
+    setOrders(asCollection(data, ["orders"]));
   };
 
   const getOrder = async (id) => {
     const data = await OrderService.getOrderById(id);
-    setSelectedOrder(data.order || data);
+    setSelectedOrder(asEntity(data, ["order"]));
   };
 
   const createOrder = async (orderData) => {
@@ -32,7 +33,7 @@ export const OrderProvider = ({ children }) => {
 
   const getOrdersByUser = async (userId) => {
     const data = await OrderService.getOrdersByUser(userId);
-    setOrders(data.orders || data);
+    setOrders(asCollection(data, ["orders"]));
   };
 
   return (

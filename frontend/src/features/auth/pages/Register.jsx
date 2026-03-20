@@ -5,6 +5,7 @@ import RegisterForm from "../components/RegisterForm";
 import { useAuth } from "../authSlice";
 import { getTokenFromAuthPayload } from "../../../utils/helpers";
 import { LOGO } from "../../../assets";
+import { getDefaultRouteForRole } from "../../../utils/roleRouting";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -12,9 +13,8 @@ export default function Register() {
 
   const [form, setForm] = useState({
     name: "",
-    email: "",
+    contactNumber: "",
     password: "",
-    role: "USER",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -30,8 +30,8 @@ export default function Register() {
     event.preventDefault();
     setError("");
 
-    if (!form.name || !form.email || !form.password) {
-      setError("Name, email and password are required.");
+    if (!form.name || !form.contactNumber || !form.password) {
+      setError("Name, contact number and password are required.");
       return;
     }
 
@@ -41,7 +41,7 @@ export default function Register() {
       const payload = await registerUser(form);
       const token = getTokenFromAuthPayload(payload);
 
-      navigate(token ? "/" : "/login", { replace: true });
+      navigate(token ? getDefaultRouteForRole("USER") : "/login", { replace: true });
     } catch (submitError) {
       setError(submitError?.friendlyMessage || submitError?.message || "Registration failed");
     } finally {
@@ -55,11 +55,11 @@ export default function Register() {
         <div className="text-center">
           <img src={LOGO} alt="CTSE Logo" className="object-contain h-auto mx-auto w-60" />
           <p className="mt-2 text-sm text-[#5f6368]">
-            Register a role to access microservice operations.
+            Create your customer account for ordering and loyalty points.
           </p>
         </div>
 
-        <Card title="Register" subtitle="Provision account in auth service">
+        <Card title="Register" subtitle="Name, contact number, and password only">
           <RegisterForm
             form={form}
             onChange={handleChange}

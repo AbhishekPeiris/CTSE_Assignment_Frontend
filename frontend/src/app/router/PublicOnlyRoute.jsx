@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAppContext } from "../providers/AppProvider";
 import Loader from "../../components/ui/Loader";
+import { getDefaultRouteForRole } from "../../utils/roleRouting";
 
 export default function PublicOnlyRoute({ children }) {
   const { auth, isBootstrapping } = useAppContext();
@@ -10,7 +11,7 @@ export default function PublicOnlyRoute({ children }) {
   }
 
   if (auth?.isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={getDefaultRouteForRole(auth?.user)} replace />;
   }
 
   return children;

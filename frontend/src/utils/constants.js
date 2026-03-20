@@ -1,7 +1,7 @@
 export const APP_NAME = "CTSE Microservice System";
 
 export const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:30300";
 
 export const ROLES = {
     ADMIN: "ADMIN",
@@ -11,17 +11,32 @@ export const ROLES = {
 
 export const ORDER_STATUS = {
     PENDING: "PENDING",
-    PROCESSING: "PROCESSING",
-    DELIVERED: "DELIVERED",
+    ASSIGNED: "ASSIGNED",
+    OUT_FOR_DELIVERY: "OUT_FOR_DELIVERY",
+    COMPLETED: "COMPLETED",
+    CANCELLED_BY_USER: "CANCELLED_BY_USER",
+    CANCELLED_BY_ADMIN: "CANCELLED_BY_ADMIN",
+    CANCELLED_BY_DELIVERY: "CANCELLED_BY_DELIVERY",
 };
+
+export const ORDER_STATUS_FLOW = [
+    "PENDING",
+    "ASSIGNED",
+    "OUT_FOR_DELIVERY",
+    "COMPLETED",
+    "CANCELLED_BY_USER",
+    "CANCELLED_BY_ADMIN",
+    "CANCELLED_BY_DELIVERY",
+];
 
 export const ORDER_STATUS_OPTIONS = [
     "PENDING",
-    "PROCESSING",
-    "CONFIRMED",
-    "SHIPPED",
-    "DELIVERED",
-    "CANCELLED",
+    "ASSIGNED",
+    "OUT_FOR_DELIVERY",
+    "COMPLETED",
+    "CANCELLED_BY_USER",
+    "CANCELLED_BY_ADMIN",
+    "CANCELLED_BY_DELIVERY",
 ];
 
 export const PRODUCT_STATUS = {
@@ -30,11 +45,12 @@ export const PRODUCT_STATUS = {
 };
 
 export const DELIVERY_STATUS_OPTIONS = [
-    "PENDING",
-    "ASSIGNED",
-    "DISPATCHED",
-    "ON_ROUTE",
-    "DELIVERED",
-    "FAILED",
-    "CANCELLED",
+    "OUT_FOR_DELIVERY",
+    "COMPLETED",
+    "CANCELLED_BY_DELIVERY",
+];
+
+export const DELIVERY_ALLOWED_STATUS_FOR_DELIVERY_ROLE = [
+    "COMPLETED",
+    "CANCELLED_BY_DELIVERY",
 ];
