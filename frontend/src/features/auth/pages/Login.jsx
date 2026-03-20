@@ -4,12 +4,14 @@ import Card from "../../../components/ui/Card";
 import LoginForm from "../components/LoginForm";
 import { useAuth } from "../authSlice";
 import { LOGO } from "../../../assets";
+import { getDefaultRouteForRole } from "../../../utils/roleRouting";
+import { getUserFromAuthPayload } from "../../../utils/helpers";
 
 export default function Login() {
   const navigate = useNavigate();
   const { loginUser } = useAuth();
 
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ contactNumber: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,16 +26,17 @@ export default function Login() {
     event.preventDefault();
     setError("");
 
-    if (!form.email || !form.password) {
-      setError("Please fill in both email and password.");
+    if (!form.contactNumber || !form.password) {
+      setError("Please fill in both contact number and password.");
       return;
     }
 
     setLoading(true);
 
     try {
-      await loginUser(form);
-      navigate("/", { replace: true });
+      const payload = await loginUser(form);
+      const user = getUserFromAuthPayload(payload);
+      navigate(getDefaultRouteForRole(user), { replace: true });
     } catch (submitError) {
       setError(submitError?.friendlyMessage || submitError?.message || "Login failed");
     } finally {
@@ -47,11 +50,11 @@ export default function Login() {
         <div className="text-center">
           <img src={LOGO} alt="CTSE Logo" className="object-contain h-auto mx-auto w-60" />
           <p className="mt-2 text-sm text-[#5f6368]">
-            Secure access to products, orders, and delivery control.
+            One secure login for customer shopping, admin operations, and delivery work.
           </p>
         </div>
 
-        <Card title="Sign In" subtitle="Authenticate with your Admin portal credentials">
+        <Card title="Sign In" subtitle="Use contact number and password">
           <LoginForm
             form={form}
             onChange={handleChange}

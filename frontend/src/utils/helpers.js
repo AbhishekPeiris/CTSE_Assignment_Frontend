@@ -1,4 +1,4 @@
-export const formatCurrency = (amount, currency = "USD") => {
+export const formatCurrency = (amount, currency = "LKR") => {
     const numeric = Number(amount || 0);
 
     return new Intl.NumberFormat("en-US", {
@@ -116,7 +116,23 @@ export const getTokenFromAuthPayload = (payload) => {
 };
 
 export const getUserFromAuthPayload = (payload) => {
-    return payload?.user || payload?.data?.user || payload?.data?.data?.user || null;
+    if (!payload) {
+        return null;
+    }
+
+    if (payload?.user || payload?.data?.user || payload?.data?.data?.user) {
+        return payload?.user || payload?.data?.user || payload?.data?.data?.user || null;
+    }
+
+    if (payload?._id || payload?.id) {
+        return payload;
+    }
+
+    if (payload?.data?._id || payload?.data?.id) {
+        return payload.data;
+    }
+
+    return null;
 };
 
 export const resolveEntityId = (entity) => {
@@ -148,14 +164,12 @@ export const statusClasses = (status) => {
         "LOW STOCK": "bg-amber-50 text-amber-700 border-amber-200",
         "OUT OF STOCK": "bg-rose-50 text-rose-700 border-rose-200",
         PENDING: "bg-slate-100 text-slate-700 border-slate-200",
-        PROCESSING: "bg-blue-50 text-blue-700 border-blue-200",
-        CONFIRMED: "bg-sky-50 text-sky-700 border-sky-200",
-        SHIPPED: "bg-cyan-50 text-cyan-700 border-cyan-200",
-        DISPATCHED: "bg-indigo-50 text-indigo-700 border-indigo-200",
-        "ON ROUTE": "bg-indigo-50 text-indigo-700 border-indigo-200",
-        DELIVERED: "bg-emerald-50 text-emerald-700 border-emerald-200",
-        CANCELLED: "bg-rose-50 text-rose-700 border-rose-200",
-        FAILED: "bg-rose-50 text-rose-700 border-rose-200",
+        ASSIGNED: "bg-sky-50 text-sky-700 border-sky-200",
+        "OUT FOR DELIVERY": "bg-indigo-50 text-indigo-700 border-indigo-200",
+        COMPLETED: "bg-emerald-50 text-emerald-700 border-emerald-200",
+        "CANCELLED BY USER": "bg-rose-50 text-rose-700 border-rose-200",
+        "CANCELLED BY ADMIN": "bg-rose-50 text-rose-700 border-rose-200",
+        "CANCELLED BY DELIVERY": "bg-rose-50 text-rose-700 border-rose-200",
     };
 
     return styles[normalized] || "bg-slate-50 text-slate-700 border-slate-200";
@@ -164,11 +178,11 @@ export const statusClasses = (status) => {
 export const getStatusColor = (status) => {
     const normalized = normalizeStatus(status).toUpperCase();
 
-    if (normalized === "DELIVERED") {
+    if (normalized === "COMPLETED") {
         return "green";
     }
 
-    if (normalized === "PROCESSING") {
+    if (normalized === "OUT FOR DELIVERY") {
         return "orange";
     }
 

@@ -17,13 +17,13 @@ export default function RegisterForm({ form, onChange, onSubmit, loading, error 
       />
 
       <Input
-        label="Email"
-        type="email"
-        name="email"
-        placeholder="Enter your email"
-        value={form.email}
+        label="Contact Number"
+        type="text"
+        name="contactNumber"
+        placeholder="Enter your contact number (e.g. +94771234567)"
+        value={form.contactNumber}
         required
-        autoComplete="email"
+        autoComplete="tel"
         onChange={onChange}
       />
 
@@ -37,23 +37,6 @@ export default function RegisterForm({ form, onChange, onSubmit, loading, error 
         autoComplete="new-password"
         onChange={onChange}
       />
-
-      <div>
-        <label htmlFor="register-role" className="mb-1 block text-sm font-medium text-[#374151]">
-          Role
-        </label>
-        <select
-          id="register-role"
-          name="role"
-          value={form.role}
-          onChange={onChange}
-          className="w-full rounded-xl border border-[#d9dde8] bg-white px-3 py-2.5 text-sm text-[#1f2937] outline-none transition focus:border-[#1a73e8] focus:ring-2 focus:ring-[#d2e3fc]"
-        >
-          {/* <option value="USER">USER</option> */}
-          <option value="ADMIN">ADMIN</option>
-          {/* <option value="DELIVERY">DELIVERY</option> */}
-        </select>
-      </div>
 
       <ErrorMessage message={error} />
 

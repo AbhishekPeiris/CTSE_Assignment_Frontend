@@ -1,31 +1,62 @@
 import apiClient from "../api/apiClient";
 import { API_ENDPOINTS } from "../api/endpoints";
 
-const login = async (credentials) => {
-  const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
+const login = async ({ contactNumber, password }) => {
+  const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, {
+    contactNumber,
+    password,
+  });
+
   return response.data;
 };
 
-const register = async (data) => {
-  const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, data);
+const register = async ({ name, contactNumber, password }) => {
+  const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, {
+    name,
+    contactNumber,
+    password,
+  });
+
   return response.data;
 };
 
-const getAllUsers = async () => {
-  const response = await apiClient.get(API_ENDPOINTS.AUTH.GET_ALL_USERS);
+const getCurrentUser = async () => {
+  const response = await apiClient.get(API_ENDPOINTS.AUTH.ME);
   return response.data;
 };
 
-const getCurrentUser = async (token) => {
-  const config = token
-    ? {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    : undefined;
+const getMyOrdersFromAuth = async () => {
+  const response = await apiClient.get(API_ENDPOINTS.AUTH.MY_ORDERS_FROM_AUTH);
+  return response.data;
+};
 
-  const response = await apiClient.get(API_ENDPOINTS.AUTH.ME, config);
+const getUsers = async (params = {}) => {
+  const response = await apiClient.get(API_ENDPOINTS.USERS.GET_ALL, { params });
+  return response.data;
+};
+
+const createManagedUser = async (payload) => {
+  const response = await apiClient.post(API_ENDPOINTS.USERS.CREATE_MANAGED, payload);
+  return response.data;
+};
+
+const getUserById = async (id) => {
+  const response = await apiClient.get(API_ENDPOINTS.USERS.GET_BY_ID(id));
+  return response.data;
+};
+
+const getUserByContact = async (contactNumber) => {
+  const response = await apiClient.get(API_ENDPOINTS.USERS.GET_BY_CONTACT(contactNumber));
+  return response.data;
+};
+
+const lookupOrCreateCustomer = async (payload) => {
+  const response = await apiClient.post(API_ENDPOINTS.USERS.LOOKUP_OR_CREATE_CUSTOMER, payload);
+  return response.data;
+};
+
+const adjustUserLoyalty = async (userId, payload) => {
+  const response = await apiClient.patch(API_ENDPOINTS.USERS.ADJUST_LOYALTY(userId), payload);
   return response.data;
 };
 
@@ -36,7 +67,13 @@ const logout = () => {
 export const AuthService = {
   login,
   register,
-  getAllUsers,
   getCurrentUser,
+  getMyOrdersFromAuth,
+  getUsers,
+  createManagedUser,
+  getUserById,
+  getUserByContact,
+  lookupOrCreateCustomer,
+  adjustUserLoyalty,
   logout,
 };

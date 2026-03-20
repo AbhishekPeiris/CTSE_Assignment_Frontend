@@ -3,7 +3,7 @@ import { API_ENDPOINTS } from "../api/endpoints";
 
 const getPublicProfile = async (userId) => {
     const response = await apiClient.get(
-        API_ENDPOINTS.AUTH.USER_PUBLIC_PROFILE(userId)
+        API_ENDPOINTS.USERS.PUBLIC_PROFILE(userId)
     );
     return response.data;
 };

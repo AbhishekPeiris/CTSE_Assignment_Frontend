@@ -6,13 +6,13 @@ export default function LoginForm({ form, onChange, onSubmit, loading, error }) 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <Input
-        label="Email"
-        type="email"
-        name="email"
-        placeholder="Enter your email"
-        value={form.email}
+        label="Contact Number"
+        type="text"
+        name="contactNumber"
+        placeholder="Enter your contact number (e.g. +94771234567)"
+        value={form.contactNumber}
         required
-        autoComplete="email"
+        autoComplete="tel"
         onChange={onChange}
       />
 

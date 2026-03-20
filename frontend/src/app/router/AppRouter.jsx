@@ -1,38 +1,55 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import AppShell from "../../components/layout/AppShell";
+import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicOnlyRoute from "./PublicOnlyRoute";
 import NotFoundPage from "./NotFoundPage";
 import Login from "../../features/auth/pages/Login";
 import Register from "../../features/auth/pages/Register";
-import Dashboard from "../../features/dashboard/pages/Dashboard";
-import ProductList from "../../features/products/pages/ProductList";
-import ProductDetails from "../../features/products/pages/ProductDetails";
-import OrderDetails from "../../features/orders/pages/OrderDetails";
-import DeliveryList from "../../features/deliveries/pages/DeliveryList";
-import OrderPage from "../../features/orders/pages/OrderPage";
-import OrderList from "../../features/orders/components/OrderList";
+import RoleAwareHome from "./RoleAwareHome";
+import UserOrdersPage from "../../features/client/pages/UserOrdersPage";
+import UserOrderTrackingPage from "../../features/client/pages/UserOrderTrackingPage";
+import AdminPortalPage from "../../features/admin/pages/AdminPortalPage";
+import DeliveryPortalPage from "../../features/deliveries/pages/DeliveryPortalPage";
 
 export default function AppRouter() {
   return (
     <Routes>
+      <Route path="/" element={<RoleAwareHome />} />
+
       <Route
+        path="/my-orders"
         element={
-          <ProtectedRoute>
-            <AppShell />
+          <ProtectedRoute allowedRoles={["USER"]}>
+            <UserOrdersPage />
           </ProtectedRoute>
         }
-      >
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/products" element={<ProductList />} />
-        <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/orders" element={<Navigate to="/orders/sales" replace />} />
-        <Route path="/orders/sales" element={<OrderPage />} />
-        <Route path="/orders/history" element={<OrderList />} />
-        <Route path="/orders/:id" element={<OrderDetails />} />
-        <Route path="/deliveries" element={<DeliveryList />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
+      />
+
+      <Route
+        path="/orders/:id/tracking"
+        element={
+          <ProtectedRoute allowedRoles={["USER", "ADMIN"]}>
+            <UserOrderTrackingPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin-portal"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <AdminPortalPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/delivery-portal"
+        element={
+          <ProtectedRoute allowedRoles={["DELIVERY"]}>
+            <DeliveryPortalPage />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/login"
@@ -51,6 +68,8 @@ export default function AppRouter() {
           </PublicOnlyRoute>
         }
       />
+
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

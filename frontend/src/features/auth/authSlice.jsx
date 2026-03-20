@@ -17,7 +17,7 @@ export function useAuth() {
       throw new Error("Token not found in login response");
     }
 
-    let user = getUserFromAuthPayload(payload) || { email: credentials?.email || "" };
+    let user = getUserFromAuthPayload(payload) || { contactNumber: credentials?.contactNumber || "" };
 
     login({
       token,
@@ -26,7 +26,7 @@ export function useAuth() {
 
     if (!getUserFromAuthPayload(payload)) {
       try {
-        const mePayload = await AuthService.getCurrentUser(token);
+        const mePayload = await AuthService.getCurrentUser();
         user = asEntity(mePayload, ["user"]) || user;
         login({ token, user });
       } catch (error) {
@@ -44,8 +44,8 @@ export function useAuth() {
     if (token) {
       const user = getUserFromAuthPayload(payload) || {
         name: userData?.name || "",
-        email: userData?.email || "",
-        role: userData?.role || "USER",
+        contactNumber: userData?.contactNumber || "",
+        role: "USER",
       };
 
       login({ token, user });
