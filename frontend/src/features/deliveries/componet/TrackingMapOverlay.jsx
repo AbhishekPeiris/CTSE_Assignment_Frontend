@@ -1,12 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const generateTrackingIframeUrl = (lat, lng) => {
-  const colomboLat = 6.9271;
-  const colomboLng = 79.8612;
-  return `https://maps.google.com/maps?saddr=${colomboLat},${colomboLng}&daddr=${lat},${lng}&output=embed`;
+const generateTrackingIframeUrl = (startLat, startLng, destLat, destLng) => {
+  const sLat = Number(startLat).toFixed(5);
+  const sLng = Number(startLng).toFixed(5);
+  const dLat = Number(destLat).toFixed(5);
+  const dLng = Number(destLng).toFixed(5);
+  return `https://maps.google.com/maps?saddr=${sLat},${sLng}&daddr=${dLat},${dLng}&output=embed`;
 };
 
 export default function TrackingMapOverlay({ delivery, onClose }) {
+  const [currentLocation, setCurrentLocation] = useState({ lat: 6.9271, lng: 79.8612 }); // Default Colombo
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting current location:", error);
+          // Keep fallback to Colombo
+        }
+      );
+    }
+  }, []);
+
   if (!delivery || !delivery.deliveryLocation) return null;
 
   return (
@@ -34,7 +55,12 @@ export default function TrackingMapOverlay({ delivery, onClose }) {
           width="100%"
           height="100%"
           style={{ border: 0 }}
-          src={generateTrackingIframeUrl(delivery.deliveryLocation.latitude, delivery.deliveryLocation.longitude)}
+          src={generateTrackingIframeUrl(
+            currentLocation.lat, 
+            currentLocation.lng, 
+            delivery.deliveryLocation.latitude, 
+            delivery.deliveryLocation.longitude
+          )}
           allowFullScreen
           loading="lazy"
         />
