@@ -48,7 +48,7 @@ export default function AdminSideBar() {
                   : "text-label hover:bg-line/30",
               ].join(" ")}
             >
-              Customers
+              Users
             </Link>
 
             <div className="pl-2 mt-2 space-y-1 border-l border-line">
