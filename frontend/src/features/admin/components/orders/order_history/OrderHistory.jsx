@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
+import { AuthService } from "../../../../../services/auth.service";
 import { OrderService } from "../../../../../services/order.service";
 import { resolveEntityId } from "../../../../../utils/helpers";
 import ClientOrders from "./components/ClientOrders";
@@ -23,6 +24,90 @@ export default function OrderHistory({
     error: "",
     data: null,
   });
+  const [customerNamesByOrderId, setCustomerNamesByOrderId] = useState({});
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCustomerNames = async () => {
+      const namesByOrderId = {};
+      const namesByCustomerId = new Map();
+      const namesByContact = new Map();
+
+      await Promise.all(
+        orders.map(async (order) => {
+          const orderId = resolveEntityId(order);
+
+          if (!orderId) {
+            return;
+          }
+
+          const directName = String(order?.customerName || order?.user?.name || "").trim();
+
+          if (directName) {
+            namesByOrderId[orderId] = directName;
+            return;
+          }
+
+          const customerId =
+            order?.userId || order?.customerId || order?.user?._id || order?.user?.id || "";
+          const contactNumber = String(
+            order?.userContactNumber || order?.customerContactNumber || "",
+          ).trim();
+
+          if (customerId && namesByCustomerId.has(customerId)) {
+            namesByOrderId[orderId] = namesByCustomerId.get(customerId);
+            return;
+          }
+
+          if (contactNumber && namesByContact.has(contactNumber)) {
+            namesByOrderId[orderId] = namesByContact.get(contactNumber);
+            return;
+          }
+
+          let resolvedName = "";
+
+          try {
+            if (customerId) {
+              const userResponse = await AuthService.getUserById(customerId);
+              const user = userResponse?.user || userResponse?.data || userResponse;
+              resolvedName = String(user?.name || "").trim();
+            }
+
+            if (!resolvedName && contactNumber) {
+              const contactResponse = await AuthService.getUserByContact(contactNumber);
+              const user = contactResponse?.user || contactResponse?.data || contactResponse;
+              resolvedName = String(user?.name || "").trim();
+            }
+          } catch (_error) {
+            resolvedName = "";
+          }
+
+          const finalName = resolvedName || "Walk-in Customer";
+
+          if (customerId) {
+            namesByCustomerId.set(customerId, finalName);
+          }
+
+          if (contactNumber) {
+            namesByContact.set(contactNumber, finalName);
+          }
+
+          namesByOrderId[orderId] = finalName;
+        }),
+      );
+
+      if (!cancelled) {
+        setCustomerNamesByOrderId(namesByOrderId);
+      }
+    };
+
+    loadCustomerNames();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [orders]);
 
   const filteredOrders = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -142,6 +227,7 @@ export default function OrderHistory({
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
           normalizeRole={normalizeRole}
+          customerNamesByOrderId={customerNamesByOrderId}
         />
 
         <SelectedOrder
@@ -153,6 +239,7 @@ export default function OrderHistory({
           handleCancelOrderAsAdmin={handleCancelOrderAsAdmin}
           handleDeleteOrder={handleDeleteOrder}
           actionLoading={actionLoading}
+          customerNamesByOrderId={customerNamesByOrderId}
         />
       </div>
     </div>

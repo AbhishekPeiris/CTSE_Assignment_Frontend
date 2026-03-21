@@ -144,8 +144,7 @@ export function useOrderStore({
     }
 
     if (
-      !orderCustomer ||
-      orderCustomer.contactNumber !== orderForm.customerContactNumber.trim()
+      orderCustomer?.contactNumber !== orderForm.customerContactNumber.trim()
     ) {
       setError("Lookup or create the customer before placing the order.");
       return;
@@ -235,9 +234,9 @@ export function useOrderStore({
     );
   };
 
-  const handleCancelOrderAsAdmin = async (order) => {
+  const handleCancelOrderAsAdmin = async (order, reasonInput = "") => {
     const orderId = resolveEntityId(order);
-    const reason = globalThis.prompt("Cancellation reason (optional):") || "";
+    const reason = String(reasonInput || "").trim();
 
     await runAction(
       `cancel-order:${orderId}`,
