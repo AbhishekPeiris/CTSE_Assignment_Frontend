@@ -6,6 +6,8 @@ const INITIAL_ASSIGN_FORM = {
   orderId: "",
   deliveryUserId: "",
   notes: "",
+  priority: "NORMAL",
+  estimatedDeliveryTime: "",
 };
 
 export function useDeliveryStore({
@@ -16,15 +18,11 @@ export function useDeliveryStore({
   loadOrders,
   loadUsers,
 }) {
-  const [deliveryAssignForm, setDeliveryAssignForm] =
-    useState(INITIAL_ASSIGN_FORM);
+  const [deliveryAssignForm, setDeliveryAssignForm] = useState(INITIAL_ASSIGN_FORM);
   const [deliveryStatusDrafts, setDeliveryStatusDrafts] = useState({});
 
   const handleCreateDelivery = async () => {
-    if (
-      !deliveryAssignForm.orderId.trim() ||
-      !deliveryAssignForm.deliveryUserId.trim()
-    ) {
+    if (!deliveryAssignForm.orderId.trim() || !deliveryAssignForm.deliveryUserId.trim()) {
       setError("Order ID and delivery user are required.");
       return;
     }
@@ -37,10 +35,12 @@ export function useDeliveryStore({
       "create-delivery",
       async () => {
         await DeliveryService.assignDelivery({
-          orderId: deliveryAssignForm.orderId.trim(),
-          deliveryUserId: deliveryAssignForm.deliveryUserId,
-          deliveryUserName: deliveryUser?.name,
-          notes: deliveryAssignForm.notes.trim() || undefined,
+          orderId:               deliveryAssignForm.orderId.trim(),
+          deliveryUserId:        deliveryAssignForm.deliveryUserId,
+          deliveryUserName:      deliveryUser?.name,
+          notes:                 deliveryAssignForm.notes.trim() || undefined,
+          priority:              deliveryAssignForm.priority || "NORMAL",
+          estimatedDeliveryTime: deliveryAssignForm.estimatedDeliveryTime || undefined,
         });
 
         setDeliveryAssignForm(INITIAL_ASSIGN_FORM);
@@ -62,10 +62,7 @@ export function useDeliveryStore({
     await runAction(
       `delivery-status:${deliveryId}`,
       async () => {
-        await DeliveryService.updateDeliveryStatus(deliveryId, {
-          status,
-        });
-
+        await DeliveryService.updateDeliveryStatus(deliveryId, { status });
         await Promise.all([loadDeliveries(), loadOrders(), loadUsers()]);
       },
       "Delivery status updated.",

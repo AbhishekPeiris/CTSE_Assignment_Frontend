@@ -2,6 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { LOGO } from "../../../assets";
 
 const CUSTOMER_TABS = new Set(["customers", "admins", "deliveryUsers"]);
+const PRODUCTS_TABS = new Set(["products", "categories"]);
 
 export default function AdminSideBar() {
   const [searchParams] = useSearchParams();
@@ -9,7 +10,10 @@ export default function AdminSideBar() {
   const selectedOrderView = searchParams.get("orderView") || "make";
 
   const isCustomersGroupActive = CUSTOMER_TABS.has(selectedTab);
+  const isProductsGroupActive = PRODUCTS_TABS.has(selectedTab);
   const isOrdersGroupActive = selectedTab === "orders";
+  const isDeliveriesGroupActive = selectedTab === "deliveries";
+  const selectedDeliveryView = searchParams.get("deliveryView") || "manage";
 
   return (
     <aside className="h-full text-white bg-white border-r border-line">
@@ -73,17 +77,44 @@ export default function AdminSideBar() {
             </div>
           </div>
 
-          <Link
-            to="/admin-portal?tab=products"
-            className={[
-              "block rounded-xl px-3 py-2 text-sm font-medium transition",
-              selectedTab === "products"
-                ? "bg-[#1d4ed8]/10 text-primary"
-                : "text-label hover:bg-line/30",
-            ].join(" ")}
-          >
-            Products
-          </Link>
+          <div className="p-2 rounded-xl">
+            <Link
+              to="/admin-portal?tab=products"
+              className={[
+                "block rounded-lg px-3 py-2 text-sm font-semibold transition",
+                isProductsGroupActive
+                  ? "bg-[#1d4ed8]/10 text-primary"
+                  : "text-label hover:bg-line/30",
+              ].join(" ")}
+            >
+              Products
+            </Link>
+
+            <div className="pl-2 mt-2 space-y-1 border-l border-line">
+              <Link
+                to="/admin-portal?tab=products"
+                className={[
+                  "block rounded-md px-3 py-1.5 text-xs font-medium transition",
+                  selectedTab === "products"
+                    ? "bg-[#1d4ed8]/10 text-primary"
+                    : "text-label hover:bg-line/30",
+                ].join(" ")}
+              >
+                Product List
+              </Link>
+              <Link
+                to="/admin-portal?tab=categories"
+                className={[
+                  "block rounded-md px-3 py-1.5 text-xs font-medium transition",
+                  selectedTab === "categories"
+                    ? "bg-[#1d4ed8]/10 text-primary"
+                    : "text-label hover:bg-line/30",
+                ].join(" ")}
+              >
+                Category
+              </Link>
+            </div>
+          </div>
 
           <div className="p-2 rounded-xl">
             <Link
@@ -119,17 +150,39 @@ export default function AdminSideBar() {
             </div>
           </div>
 
-          <Link
-            to="/admin-portal?tab=deliveries"
-            className={[
-              "block rounded-xl px-3 py-2 text-sm font-medium transition",
-              selectedTab === "deliveries"
-                ? "bg-[#1d4ed8]/10 text-primary"
-                : "text-label hover:bg-line/30",
-            ].join(" ")}
-          >
-            Deliveries
-          </Link>
+          <div className="p-2 rounded-xl">
+            <Link
+              to="/admin-portal?tab=deliveries&deliveryView=manage"
+              className={[
+                "block rounded-lg px-3 py-2 text-sm font-semibold transition",
+                isDeliveriesGroupActive
+                  ? "bg-[#1d4ed8]/10 text-primary"
+                  : "text-label hover:bg-line/30",
+              ].join(" ")}
+            >
+              Deliveries
+            </Link>
+
+            <div className="pl-2 mt-2 space-y-1 border-l border-line">
+              {[
+                { key: "manage", label: "Manage" },
+                { key: "active", label: "Active Deliveries" },
+              ].map((item) => (
+                <Link
+                  key={item.key}
+                  to={`/admin-portal?tab=deliveries&deliveryView=${item.key}`}
+                  className={[
+                    "block rounded-md px-3 py-1.5 text-xs font-medium transition",
+                    isDeliveriesGroupActive && selectedDeliveryView === item.key
+                      ? "bg-[#1d4ed8]/10 text-primary"
+                      : "text-label hover:bg-line/30",
+                  ].join(" ")}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </nav>
       </div>
     </aside>
