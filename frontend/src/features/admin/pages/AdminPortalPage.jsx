@@ -388,6 +388,7 @@ export default function AdminPortalPage() {
           description="Assign deliveries and manage delivery lifecycle statuses."
         >
           <DeliveryManagement
+            orders={orders}
             deliveryAssignForm={deliveryAssignForm}
             setDeliveryAssignForm={setDeliveryAssignForm}
             deliveryUsers={deliveryUsers}
