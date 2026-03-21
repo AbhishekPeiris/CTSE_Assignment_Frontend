@@ -22,13 +22,7 @@ export default function DeliveryPortalPage() {
   const { auth, logout } = useAppContext();
 
   const [activeMapId, setActiveMapId] = useState(null);
-
-  const [state, setState] = useState({
-    loading: true,
-    error: "",
-    deliveries: [],
-  });
-  
+  const [state, setState] = useState({ loading: true, error: "", deliveries: [] });
   const [actionError, setActionError] = useState("");
   const [actionLoading, setActionLoading] = useState("");
   const [actionSuccess, setActionSuccess] = useState("");
@@ -37,76 +31,49 @@ export default function DeliveryPortalPage() {
 
   const loadDeliveries = useCallback(async () => {
     setState((prev) => ({ ...prev, loading: true, error: "" }));
-
     try {
       const response = await DeliveryService.getMyTodayDeliveries();
-      const deliveries = Array.isArray(response) ? response : [];
-
-      setState({
-        loading: false,
-        error: "",
-        deliveries,
-      });
+      setState({ loading: false, error: "", deliveries: Array.isArray(response) ? response : [] });
     } catch (error) {
       setState({
         loading: false,
-        error:
-          error?.friendlyMessage ||
-          error?.message ||
-          "Unable to load today assignments",
+        error: error?.friendlyMessage || error?.message || "Unable to load today assignments",
         deliveries: [],
       });
     }
   }, []);
 
-  useEffect(() => {
-    loadDeliveries();
-  }, [loadDeliveries]);
+  useEffect(() => { loadDeliveries(); }, [loadDeliveries]);
 
   const handleUpdateStatus = async (deliveryId, status) => {
     setActionError("");
     setActionSuccess("");
     setActionLoading(`${deliveryId}:${status}`);
-
     try {
       await DeliveryService.updateDeliveryStatus(deliveryId, {
         status,
         notes: notesByDelivery[deliveryId] || undefined,
       });
-
-      setActionSuccess("Delivery status updated.");
+      setActionSuccess("Status updated successfully.");
       await loadDeliveries();
     } catch (error) {
-      setActionError(
-        error?.friendlyMessage ||
-          error?.message ||
-          "Failed to update delivery status",
-      );
+      setActionError(error?.friendlyMessage || error?.message || "Failed to update status");
     } finally {
       setActionLoading("");
     }
   };
 
   const handleNoteChange = (id, text) => {
-    setNotesByDelivery((prev) => ({
-      ...prev,
-      [id]: text,
-    }));
+    setNotesByDelivery((prev) => ({ ...prev, [id]: text }));
   };
 
   const upcomingDeliveries = useMemo(
-    () =>
-      state.deliveries.filter(
-        (d) => !TERMINAL_STATUSES.has(String(d?.status).toUpperCase()),
-      ),
+    () => state.deliveries.filter((d) => !TERMINAL_STATUSES.has(String(d?.status).toUpperCase())),
     [state.deliveries],
   );
 
   const pastDeliveries = useMemo(
-    () =>
-      state.deliveries.filter((d) =>
-        TERMINAL_STATUSES.has(String(d?.status).toUpperCase()),
-      ),
+    () => state.deliveries.filter((d) => TERMINAL_STATUSES.has(String(d?.status).toUpperCase())),
     [state.deliveries],
   );
 
@@ -114,33 +81,39 @@ export default function DeliveryPortalPage() {
     (d) => String(d?.status).toUpperCase() === "COMPLETED"
   ).length;
 
+  const levelThreshold = completedCount > 10 ? 26 : 11;
+  const levelProgress = Math.min((completedCount / levelThreshold) * 100, 100);
+  const levelLabel = completedCount > 25 ? "Legendary Courier" : completedCount > 10 ? "Professional Driver" : "Junior Runner";
+  const levelNum = completedCount > 25 ? 3 : completedCount > 10 ? 2 : 1;
+
+  const tabs = [
+    { id: "upcoming", label: "Upcoming", count: upcomingDeliveries.length },
+    { id: "activity", label: "My Activity", count: pastDeliveries.length },
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50">
+      {/* Header */}
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-4">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-slate-800">
-              Driver Portal
-            </h1>
-            <p className="text-sm font-medium text-slate-500">
-              Welcome back, {auth?.user?.name || auth?.user?.contactNumber || 'Driver'}
+            <h1 className="text-lg font-bold text-slate-800">Driver Portal</h1>
+            <p className="text-sm text-slate-400">
+              Welcome, {auth?.user?.name || auth?.user?.contactNumber || "Driver"}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={loadDeliveries}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
             >
               Sync
             </button>
             <button
               type="button"
-              onClick={() => {
-                logout();
-                navigate("/login", { replace: true });
-              }}
-              className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+              onClick={() => { logout(); navigate("/login", { replace: true }); }}
+              className="rounded-lg bg-[#1d4ed8] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1e40af]"
             >
               Sign Out
             </button>
@@ -149,92 +122,76 @@ export default function DeliveryPortalPage() {
       </header>
 
       <main className="mx-auto w-full max-w-5xl px-6 py-8">
-        <div className="mb-6 space-y-3">
+        {/* Alerts */}
+        <div className="mb-6 space-y-2">
           <ErrorMessage message={state.error} />
           <ErrorMessage message={actionError} />
-          {actionSuccess ? (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
+          {actionSuccess && (
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
               {actionSuccess}
             </div>
-          ) : null}
+          )}
         </div>
 
-        <DeliverySummary 
+        {/* Summary */}
+        <DeliverySummary
           totalAssigned={state.deliveries.length}
           pendingCount={upcomingDeliveries.length}
           completedCount={completedCount}
         />
 
-        {/* New Feature: Driver Milestone Progress & Level Up */}
-        <div className="mb-8 rounded-3xl border-2 border-slate-200 bg-white p-6 transition-all hover:bg-slate-50/50">
+        {/* Driver Level Card */}
+        <div className="mb-6 rounded-xl border border-slate-200 bg-white p-5">
           <div className="flex items-center justify-between mb-4">
-             <div className="flex items-center gap-3">
-               <div className={`flex h-12 w-12 items-center justify-center rounded-2xl border-2 font-black text-xl ${
-                 completedCount > 25 ? 'border-amber-200 bg-amber-50 text-amber-600' :
-                 completedCount > 10 ? 'border-slate-200 bg-slate-50 text-slate-600' : 'border-orange-200 bg-orange-50 text-orange-600'
-               }`}>
-                 {completedCount > 25 ? 'L3' : completedCount > 10 ? 'L2' : 'L1'}
-               </div>
-               <div>
-                 <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Driver Status</h4>
-                 <p className="text-sm font-black text-slate-700">
-                   {completedCount > 25 ? 'Legendary Courier' : completedCount > 10 ? 'Professional Driver' : 'Junior Runner'}
-                 </p>
-               </div>
-             </div>
-             <div className="text-right">
-                <span className="text-[10px] font-black text-primary p-2 bg-primary/10 rounded-xl uppercase tracking-widest">
-                  {completedCount > 25 ? 'Max Level' : `${(completedCount > 10 ? 26 : 11) - completedCount} tasks to next level`}
-                </span>
-             </div>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#1d4ed8]/20 bg-[#1d4ed8]/10 text-sm font-bold text-[#1d4ed8]">
+                L{levelNum}
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Driver Status</p>
+                <p className="text-sm font-bold text-slate-800">{levelLabel}</p>
+              </div>
+            </div>
+            <span className="rounded-lg bg-[#1d4ed8]/10 px-3 py-1 text-xs font-semibold text-[#1d4ed8]">
+              {completedCount > 25 ? "Max Level" : `${levelThreshold - completedCount} to next level`}
+            </span>
           </div>
-          <div className="relative h-3 w-full rounded-full bg-slate-100 overflow-hidden">
-            <div 
-              className={`absolute inset-y-0 left-0 transition-all duration-1000 ease-out ${
-                completedCount > 25 ? 'bg-amber-500' : completedCount > 10 ? 'bg-slate-500' : 'bg-orange-500'
-              }`}
-              style={{ width: `${Math.min((completedCount / (completedCount > 10 ? 26 : 11)) * 100, 100)}%` }}
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+            <div
+              className="h-full rounded-full bg-[#1d4ed8] transition-all duration-700"
+              style={{ width: `${levelProgress}%` }}
             />
           </div>
-          <div className="flex justify-between mt-2">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              Level {completedCount > 25 ? '3' : completedCount > 10 ? '2' : '1'} Progress
-            </span>
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-              {completedCount} Total Tasks Completed
-            </span>
+          <div className="mt-2 flex justify-between">
+            <span className="text-[10px] font-medium text-slate-400">Level {levelNum}</span>
+            <span className="text-[10px] font-medium text-slate-400">{completedCount} completed</span>
           </div>
         </div>
 
-        <div className="mb-6 flex space-x-2 border-b border-slate-200">
-          <button
-            onClick={() => setActiveTab("upcoming")}
-            className={`px-4 py-3 text-sm font-bold transition-colors border-b-2 ${
-              activeTab === "upcoming"
-                ? "border-slate-900 text-slate-900"
-                : "border-transparent text-slate-400 hover:text-slate-600 hover:border-slate-300"
-            }`}
-          >
-            Upcoming Tasks
-            <span className="ml-2 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
-              {upcomingDeliveries.length}
-            </span>
-          </button>
-          <button
-            onClick={() => setActiveTab("activity")}
-            className={`px-4 py-3 text-sm font-bold transition-colors border-b-2 ${
-              activeTab === "activity"
-                ? "border-slate-900 text-slate-900"
-                : "border-transparent text-slate-400 hover:text-slate-600 hover:border-slate-300"
-            }`}
-          >
-            My Activity
-            <span className="ml-2 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
-              {pastDeliveries.length}
-            </span>
-          </button>
+        {/* Tabs */}
+        <div className="mb-5 flex border-b border-slate-200">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`relative px-5 py-3 text-sm font-semibold transition-colors ${
+                activeTab === tab.id
+                  ? "text-[#1d4ed8]"
+                  : "text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              {tab.label}
+              <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">
+                {tab.count}
+              </span>
+              {activeTab === tab.id && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1d4ed8] rounded-t" />
+              )}
+            </button>
+          ))}
         </div>
 
+        {/* Content */}
         {state.loading ? (
           <div className="py-12">
             <Loader text="Loading your assignments..." />
@@ -243,12 +200,12 @@ export default function DeliveryPortalPage() {
           <div className="grid gap-4 md:grid-cols-2">
             {activeTab === "upcoming" ? (
               upcomingDeliveries.length === 0 ? (
-                <div className="col-span-full rounded-2xl border border-slate-200 bg-white py-16 text-center">
-                  <p className="text-sm font-medium text-slate-500">You have no upcoming deliveries assigned.</p>
+                <div className="col-span-full flex items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white py-16">
+                  <p className="text-sm text-slate-400">No upcoming deliveries assigned.</p>
                 </div>
               ) : (
                 upcomingDeliveries.map((delivery) => (
-                  <UpcomingTaskCard 
+                  <UpcomingTaskCard
                     key={resolveEntityId(delivery)}
                     delivery={delivery}
                     note={notesByDelivery[resolveEntityId(delivery)]}
@@ -266,7 +223,6 @@ export default function DeliveryPortalPage() {
         )}
       </main>
 
-      {/* Full Screen Tracking Overlay Component */}
       {activeMapId && (() => {
         const delivery = state.deliveries.find((d) => resolveEntityId(d) === activeMapId);
         return <TrackingMapOverlay delivery={delivery} onClose={() => setActiveMapId(null)} />;
