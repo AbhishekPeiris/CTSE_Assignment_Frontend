@@ -2,33 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ErrorMessage from "../../../components/ui/ErrorMessage";
 import Loader from "../../../components/ui/Loader";
-import StatusPill from "../../../components/ui/StatusPill";
 import { useAppContext } from "../../../app/providers/AppProvider";
 import { DeliveryService } from "../../../services/delivery.service";
-import { formatDate, resolveEntityId } from "../../../utils/helpers";
-
-const DELIVERY_ACTIONS = [
-  {
-    status: "PICKED_UP",
-    label: "Mark Picked Up",
-    tone: "bg-blue-600 hover:bg-blue-700 text-white",
-  },
-  {
-    status: "OUT_FOR_DELIVERY",
-    label: "Out for Delivery",
-    tone: "bg-indigo-600 hover:bg-indigo-700 text-white",
-  },
-  {
-    status: "COMPLETED",
-    label: "Delivered",
-    tone: "bg-emerald-600 hover:bg-emerald-700 text-white",
-  },
-  {
-    status: "CANCELLED_BY_DELIVERY",
-    label: "Cancel / Issue",
-    tone: "bg-rose-100 hover:bg-rose-200 text-rose-700",
-  },
-];
+import { resolveEntityId } from "../../../utils/helpers";
+import TrackingMapOverlay from "../componet/TrackingMapOverlay";
+import DeliverySummary from "../componet/DeliverySummary";
+import UpcomingTaskCard from "../componet/UpcomingTaskCard";
+import MyActivityTable from "../componet/MyActivityTable";
 
 const TERMINAL_STATUSES = new Set([
   "COMPLETED",
@@ -41,11 +21,14 @@ export default function DeliveryPortalPage() {
   const navigate = useNavigate();
   const { auth, logout } = useAppContext();
 
+  const [activeMapId, setActiveMapId] = useState(null);
+
   const [state, setState] = useState({
     loading: true,
     error: "",
     deliveries: [],
   });
+  
   const [actionError, setActionError] = useState("");
   const [actionLoading, setActionLoading] = useState("");
   const [actionSuccess, setActionSuccess] = useState("");
@@ -104,6 +87,13 @@ export default function DeliveryPortalPage() {
     }
   };
 
+  const handleNoteChange = (id, text) => {
+    setNotesByDelivery((prev) => ({
+      ...prev,
+      [id]: text,
+    }));
+  };
+
   const upcomingDeliveries = useMemo(
     () =>
       state.deliveries.filter(
@@ -126,7 +116,6 @@ export default function DeliveryPortalPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Top Header */}
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-4">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between">
           <div>
@@ -160,8 +149,6 @@ export default function DeliveryPortalPage() {
       </header>
 
       <main className="mx-auto w-full max-w-5xl px-6 py-8">
-        
-        {/* Messages */}
         <div className="mb-6 space-y-3">
           <ErrorMessage message={state.error} />
           <ErrorMessage message={actionError} />
@@ -172,38 +159,12 @@ export default function DeliveryPortalPage() {
           ) : null}
         </div>
 
-        {/* Global Summary Layer */}
-        <div className="mb-8 grid grid-cols-3 gap-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Total Assigned
-            </p>
-            <p className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-black text-slate-800">{state.deliveries.length}</span>
-              <span className="text-sm font-medium text-slate-500">today</span>
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Pending Next
-            </p>
-            <p className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-black text-blue-600">{upcomingDeliveries.length}</span>
-              <span className="text-sm font-medium text-slate-500">deliveries</span>
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Completed
-            </p>
-            <p className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-black text-emerald-600">{completedCount}</span>
-              <span className="text-sm font-medium text-slate-500">successful</span>
-            </p>
-          </div>
-        </div>
+        <DeliverySummary 
+          totalAssigned={state.deliveries.length}
+          pendingCount={upcomingDeliveries.length}
+          completedCount={completedCount}
+        />
 
-        {/* Flat Tabs Section */}
         <div className="mb-6 flex space-x-2 border-b border-slate-200">
           <button
             onClick={() => setActiveTab("upcoming")}
@@ -233,132 +194,42 @@ export default function DeliveryPortalPage() {
           </button>
         </div>
 
-        {/* Content Section */}
         {state.loading ? (
           <div className="py-12">
             <Loader text="Loading your assignments..." />
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
-            {(activeTab === "upcoming" ? upcomingDeliveries : pastDeliveries).length === 0 ? (
-              <div className="col-span-full rounded-2xl border border-slate-200 bg-white py-16 text-center">
-                <p className="text-sm font-medium text-slate-500">
-                  {activeTab === "upcoming"
-                    ? "You have no upcoming deliveries assigned."
-                    : "No past activity recorded for today."}
-                </p>
-              </div>
-            ) : (
-              (activeTab === "upcoming" ? upcomingDeliveries : pastDeliveries).map(
-                (delivery) => {
-                  const id = resolveEntityId(delivery);
-                  const status = String(delivery?.status || "ASSIGNED").toUpperCase();
-                  const isTerminal = TERMINAL_STATUSES.has(status);
-
-                  return (
-                    <article
-                      key={id}
-                      className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 transition-colors hover:bg-slate-50"
-                    >
-                      {/* Header */}
-                      <div className="flex items-start justify-between gap-3 mb-4">
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                            Order No.
-                          </p>
-                          <h2 className="text-lg font-black text-slate-800 break-all">
-                            Order #{String(delivery?.orderId)}
-                          </h2>
-                        </div>
-                        <StatusPill status={status} />
-                      </div>
-
-                      {/* Info Panel */}
-                      <div className="flex-1 space-y-3 rounded-xl border border-slate-100 bg-slate-50 p-4 shadow-sm shadow-slate-100/50">
-                        <div className="flex justify-between">
-                          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Phone</span>
-                          <span className="text-sm font-semibold text-slate-700">
-                            {delivery?.customerContactNumber || "N/A"}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Assigned</span>
-                          <span className="text-sm font-semibold text-slate-700">
-                            {formatDate(delivery?.assignedAt)}
-                          </span>
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Destination</span>
-                          <span className="text-sm font-semibold text-slate-700">
-                            {delivery?.deliveryLocation?.address || "Address not provided"}
-                          </span>
-                          {(delivery?.deliveryLocation?.latitude || delivery?.deliveryLocation?.longitude) && (
-                            <span className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                              </svg>
-                              {delivery?.deliveryLocation?.latitude || "-"}, {delivery?.deliveryLocation?.longitude || "-"}
-                            </span>
-                          )}
-                        </div>
-                        {delivery?.notes && (
-                          <div className="flex flex-col gap-1 border-t border-slate-200/60 pt-3">
-                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Shipment Notes</span>
-                            <span className="text-sm font-medium italic text-slate-600">
-                              "{delivery.notes}"
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Controls (Only if not terminal) */}
-                      {!isTerminal && (
-                        <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold uppercase text-slate-400 text-nowrap">Tracking Note</span>
-                            <input
-                              type="text"
-                              value={notesByDelivery[id] || ""}
-                              onChange={(event) =>
-                                setNotesByDelivery((prev) => ({
-                                  ...prev,
-                                  [id]: event.target.value,
-                                }))
-                              }
-                              placeholder="E.g. Traffic delay, arrived..."
-                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 outline-none transition focus:border-blue-400"
-                            />
-                          </div>
-                          
-                          <div className="grid grid-cols-2 gap-2 mt-1">
-                            {DELIVERY_ACTIONS.map((action) => (
-                              <button
-                                key={action.status}
-                                type="button"
-                                disabled={
-                                  actionLoading === `${id}:${action.status}` ||
-                                  status === action.status
-                                }
-                                onClick={() => handleUpdateStatus(id, action.status)}
-                                className={`rounded-xl px-2 py-2.5 text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed ${action.tone}`}
-                              >
-                                {actionLoading === `${id}:${action.status}`
-                                  ? "..."
-                                  : action.label}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </article>
-                  );
-                }
+            {activeTab === "upcoming" ? (
+              upcomingDeliveries.length === 0 ? (
+                <div className="col-span-full rounded-2xl border border-slate-200 bg-white py-16 text-center">
+                  <p className="text-sm font-medium text-slate-500">You have no upcoming deliveries assigned.</p>
+                </div>
+              ) : (
+                upcomingDeliveries.map((delivery) => (
+                  <UpcomingTaskCard 
+                    key={resolveEntityId(delivery)}
+                    delivery={delivery}
+                    note={notesByDelivery[resolveEntityId(delivery)]}
+                    onNoteChange={handleNoteChange}
+                    onUpdateStatus={handleUpdateStatus}
+                    actionLoading={actionLoading}
+                    onTrackMap={setActiveMapId}
+                  />
+                ))
               )
+            ) : (
+              <MyActivityTable deliveries={pastDeliveries} />
             )}
           </div>
         )}
       </main>
+
+      {/* Full Screen Tracking Overlay Component */}
+      {activeMapId && (() => {
+        const delivery = state.deliveries.find((d) => resolveEntityId(d) === activeMapId);
+        return <TrackingMapOverlay delivery={delivery} onClose={() => setActiveMapId(null)} />;
+      })()}
     </div>
   );
 }
