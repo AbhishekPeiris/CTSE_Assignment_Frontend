@@ -218,13 +218,13 @@ export default function AdminPortalPage() {
   const {
     orderForm,
     setOrderForm,
+    orderCustomer,
+    setOrderCustomer,
     orderStatusDrafts,
     setOrderStatusDrafts,
-    orderAssignmentDrafts,
-    setOrderAssignmentDrafts,
     handleAddItemToOrderDraft,
+    handleLookupOrCreateOrderCustomer,
     handleCreateOrderByAdmin,
-    handleAssignDeliveryToOrder,
     handleOrderStatusUpdate,
     handleCancelOrderAsAdmin,
     handleDeleteOrder,
@@ -357,25 +357,24 @@ export default function AdminPortalPage() {
       {activeTab === "orders" ? (
         <ManagementSection
           title="Order Management"
-          description="Create orders for customers, assign delivery users, update status, and delete orders."
+          description="Create orders for customers and manage their orders"
         >
           <OrderManagement
             activeOrderView={activeOrderView}
             orderForm={orderForm}
             setOrderForm={setOrderForm}
+            orderCustomer={orderCustomer}
+            setOrderCustomer={setOrderCustomer}
             products={products}
             handleAddItemToOrderDraft={handleAddItemToOrderDraft}
+            handleLookupOrCreateOrderCustomer={handleLookupOrCreateOrderCustomer}
             handleCreateOrderByAdmin={handleCreateOrderByAdmin}
             actionLoading={actionLoading}
             orders={orders}
             normalizeRole={normalizeRole}
             orderStatusDrafts={orderStatusDrafts}
             setOrderStatusDrafts={setOrderStatusDrafts}
-            orderAssignmentDrafts={orderAssignmentDrafts}
-            setOrderAssignmentDrafts={setOrderAssignmentDrafts}
-            deliveryUsers={deliveryUsers}
             handleOrderStatusUpdate={handleOrderStatusUpdate}
-            handleAssignDeliveryToOrder={handleAssignDeliveryToOrder}
             handleCancelOrderAsAdmin={handleCancelOrderAsAdmin}
             handleDeleteOrder={handleDeleteOrder}
           />
