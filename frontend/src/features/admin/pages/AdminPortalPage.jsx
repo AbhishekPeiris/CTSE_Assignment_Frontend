@@ -357,7 +357,7 @@ export default function AdminPortalPage() {
       {activeTab === "orders" ? (
         <ManagementSection
           title="Order Management"
-          description="Create orders for customers, assign delivery users, update status, and delete orders."
+          description="Create orders for customers and manage their orders"
         >
           <OrderManagement
             activeOrderView={activeOrderView}
