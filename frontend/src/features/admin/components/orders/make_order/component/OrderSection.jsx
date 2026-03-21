@@ -258,72 +258,40 @@ const OrderSection = ({
               </div>
             ))
           ) : (
-            <div className="rounded-[24px] border border-dashed border-line bg-white p-5 text-sm text-[#8b95a7]">
+            <div className="rounded-2xl border border-dashed border-line bg-white p-5 text-sm text-[#8b95a7]">
               Select products from the center panel to build the order.
             </div>
           )}
         </div>
 
-        <div className="mt-6 rounded-[28px] border border-[#ece6dc] bg-[#fdfaf5] p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9a8f7a]">
+        <div className="mt-6 rounded-2xl border border-line bg-white p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-word">
             Delivery details
           </p>
-          <textarea
-            rows={3}
-            value={orderForm.deliveryAddress}
-            onChange={(event) =>
-              setOrderForm((prev) => ({
-                ...prev,
-                deliveryAddress: event.target.value,
-              }))
-            }
-            placeholder="Delivery address"
-            className="mt-3 w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
-          />
-          <div className="grid gap-3 mt-3 sm:grid-cols-2">
-            <input
-              type="number"
-              step="any"
-              value={orderForm.latitude}
-              onChange={(event) =>
-                setOrderForm((prev) => ({
-                  ...prev,
-                  latitude: event.target.value,
-                }))
-              }
-              placeholder="Latitude"
-              className="rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
-            />
-            <input
-              type="number"
-              step="any"
-              value={orderForm.longitude}
-              onChange={(event) =>
-                setOrderForm((prev) => ({
-                  ...prev,
-                  longitude: event.target.value,
-                }))
-              }
-              placeholder="Longitude"
-              className="rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
-            />
+          <div className="mt-3 rounded-2xl border border-line bg-[#f8fafc] px-4 py-3 text-sm text-[#111827]">
+            {orderForm.deliveryAddress ||
+              "Select a location from the map search"}
           </div>
           <div className="mt-4 overflow-hidden rounded-[24px]">
             <LocationPickerMap
               latitude={orderForm.latitude}
               longitude={orderForm.longitude}
-              onChange={({ latitude, longitude }) =>
+              onChange={({ latitude, longitude, locationName }) =>
                 setOrderForm((prev) => ({
                   ...prev,
                   latitude,
                   longitude,
+                  deliveryAddress:
+                    locationName ||
+                    prev.deliveryAddress ||
+                    "Selected map location",
                 }))
               }
             />
           </div>
         </div>
 
-        <div className="mt-6 rounded-[28px] border border-[#ece6dc] bg-[#fffdfa] p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)]">
+        <div className="mt-6 rounded-[28px] border border-line bg-[#fffdfa] p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)]">
           <div className="flex items-center justify-between text-sm text-[#6b7280]">
             <span>Subtotal</span>
             <span className="font-semibold text-[#111827]">
