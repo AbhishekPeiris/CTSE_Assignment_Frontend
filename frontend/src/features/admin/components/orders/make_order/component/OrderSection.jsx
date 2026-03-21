@@ -35,7 +35,7 @@ const OrderSection = ({
 
   return (
     <div>
-      <aside className="p-5 bg-white xl:p-6">
+      <aside className="p-5 bg-white xl:p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-2xl font-semibold tracking-[-0.03em] text-label">
@@ -69,31 +69,33 @@ const OrderSection = ({
             </div>
           </div>
 
-          <div className="mt-4 space-y-3">
-            <input
-              value={orderForm.customerContactNumber}
-              onChange={(event) =>
-                handleCustomerFieldChange(
-                  "customerContactNumber",
-                  event.target.value,
-                )
-              }
-              placeholder="Customer phone number"
-              className="w-full rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#d6b27a] focus:ring-2 focus:ring-[#fde7c5]"
-            />
-            <input
-              value={orderForm.customerName}
-              onChange={(event) =>
-                handleCustomerFieldChange("customerName", event.target.value)
-              }
-              placeholder="Customer name for new account"
-              className="w-full rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#d6b27a] focus:ring-2 focus:ring-[#fde7c5]"
-            />
+          <div className="mt-4">
+            <div className="flex gap-2 mb-4">
+              <input
+                value={orderForm.customerContactNumber}
+                onChange={(event) =>
+                  handleCustomerFieldChange(
+                    "customerContactNumber",
+                    event.target.value,
+                  )
+                }
+                placeholder="Customer phone number"
+                className="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
+              />
+              <input
+                value={orderForm.customerName}
+                onChange={(event) =>
+                  handleCustomerFieldChange("customerName", event.target.value)
+                }
+                placeholder="Customer name for new account"
+                className="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
+              />
+            </div>
             <button
               type="button"
               onClick={handleLookupOrCreateOrderCustomer}
               disabled={actionLoading === "order-customer-lookup"}
-              className="w-full rounded-2xl bg-[#c07c2f] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#a96822] disabled:opacity-50"
+              className="w-full rounded-full bg-success px-4 py-3 text-sm font-semibold text-white transition hover:bg-success/80 disabled:opacity-50 shadow-lg"
             >
               {actionLoading === "order-customer-lookup"
                 ? "Checking customer..."
@@ -102,26 +104,26 @@ const OrderSection = ({
           </div>
 
           {orderCustomer ? (
-            <div className="mt-4 rounded-[24px] border border-[#dceadf] bg-white p-4">
+            <div className="mt-4 rounded-2xl border border-line bg-white p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-lg font-semibold text-[#111827]">
+                  <p className="text-sm font-semibold text-[#111827]">
                     {orderCustomer.name || "Walk-in Customer"}
                   </p>
-                  <p className="mt-1 text-sm text-[#6b7280]">
+                  <p className="mt-1 text-xs text-word">
                     {orderCustomer.contactNumber || "No contact number"}
                   </p>
                 </div>
                 <div className="rounded-2xl bg-[#eff8f0] px-3 py-2 text-right">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#15803d]">
-                    Loyalty
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-[#166534]">
-                    {loyaltyBalance} points
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-success">
+                    Loyalty{" "}
+                    <span className="text-[#15803d]">
+                      {loyaltyBalance} points
+                    </span>
                   </p>
                 </div>
               </div>
-              <div className="grid gap-3 mt-3 sm:grid-cols-2">
+              {/* <div className="grid gap-3 mt-3 sm:grid-cols-2">
                 <div className="rounded-2xl bg-[#f8fafc] px-3 py-3">
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
                     Card number
@@ -139,19 +141,19 @@ const OrderSection = ({
                     {orderCustomer.isActive === false ? "Inactive" : "Active"}
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
           ) : null}
         </div>
 
-        <div className="mt-6 space-y-3">
+        <div className="mt-3 space-y-3">
           {orderForm.items.length ? (
             orderForm.items.map((item, index) => (
               <div
                 key={`${item.productId}-${index}`}
-                className="flex items-center gap-3 rounded-[24px] border border-[#efe7dc] bg-[#fffdfa] p-3"
+                className="flex items-center gap-3 rounded-2xl border border-line bg-white p-2.5"
               >
-                <div className="h-16 w-16 overflow-hidden rounded-2xl bg-[#f3f4f6]">
+                <div className="h-12 w-12 overflow-hidden rounded-2xl bg-white">
                   {item.imageUrl ? (
                     <img
                       src={item.imageUrl}
@@ -159,14 +161,14 @@ const OrderSection = ({
                       className="object-cover w-full h-full"
                     />
                   ) : (
-                    <div className="h-full w-full bg-[linear-gradient(135deg,_#f5efe5,_#ece8e1)]" />
+                    <div className="h-full w-full bg-white" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="truncate text-base font-semibold text-[#111827]">
+                  <p className="truncate text-sm font-semibold text-word">
                     {item.name}
                   </p>
-                  <p className="mt-1 text-sm text-[#6b7280]">
+                  <p className="mt-1 text-xs text-[#6b7280]">
                     {formatMoney(item.price || 0)} each
                   </p>
                 </div>
@@ -214,7 +216,7 @@ const OrderSection = ({
                         ),
                       }))
                     }
-                    className="w-12 rounded-xl border border-[#e4ddd2] bg-white px-2 py-1.5 text-center text-sm font-semibold text-[#111827] outline-none focus:border-[#d6b27a]"
+                    className="w-12 rounded-xl border border-line bg-white px-2 py-1.5 text-center text-sm font-semibold text-[#111827] outline-none focus:border-[#d6b27a]"
                   />
                   <button
                     type="button"
@@ -248,7 +250,7 @@ const OrderSection = ({
                         ),
                       }))
                     }
-                    className="ml-1 rounded-full bg-[#f6efe5] px-3 py-1.5 text-xs font-semibold text-[#8a5a2b]"
+                    className="ml-1 rounded-full bg-warning px-3 py-1.5 text-xs font-normal text-white"
                   >
                     Remove
                   </button>
@@ -256,7 +258,7 @@ const OrderSection = ({
               </div>
             ))
           ) : (
-            <div className="rounded-[24px] border border-dashed border-[#ddd4c7] bg-[#fcfaf6] p-5 text-sm text-[#8b95a7]">
+            <div className="rounded-[24px] border border-dashed border-line bg-white p-5 text-sm text-[#8b95a7]">
               Select products from the center panel to build the order.
             </div>
           )}
@@ -276,7 +278,7 @@ const OrderSection = ({
               }))
             }
             placeholder="Delivery address"
-            className="mt-3 w-full rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#d6b27a] focus:ring-2 focus:ring-[#fde7c5]"
+            className="mt-3 w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
           />
           <div className="grid gap-3 mt-3 sm:grid-cols-2">
             <input
@@ -290,7 +292,7 @@ const OrderSection = ({
                 }))
               }
               placeholder="Latitude"
-              className="rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#d6b27a] focus:ring-2 focus:ring-[#fde7c5]"
+              className="rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
             />
             <input
               type="number"
@@ -303,7 +305,7 @@ const OrderSection = ({
                 }))
               }
               placeholder="Longitude"
-              className="rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#d6b27a] focus:ring-2 focus:ring-[#fde7c5]"
+              className="rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
             />
           </div>
           <div className="mt-4 overflow-hidden rounded-[24px]">
@@ -341,7 +343,7 @@ const OrderSection = ({
                 }))
               }
               placeholder="Loyalty points"
-              className="w-32 rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#d6b27a] focus:ring-2 focus:ring-[#fde7c5]"
+              className="w-32 rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
             />
             <p className="text-sm text-[#6b7280]">
               Available: <span className="font-semibold">{loyaltyBalance}</span>
