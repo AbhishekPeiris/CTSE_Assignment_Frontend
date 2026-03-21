@@ -60,6 +60,8 @@ export default function AdminPortalPage() {
   const activeTab = ADMIN_TABS.has(requestedTab) ? requestedTab : "dashboard";
   const requestedOrderView = searchParams.get("orderView") || "make";
   const activeOrderView = requestedOrderView === "history" ? "history" : "make";
+  const requestedDeliveryView = searchParams.get("deliveryView") || "manage";
+  const activeDeliveryView = ["manage", "active"].includes(requestedDeliveryView) ? requestedDeliveryView : "manage";
 
   const [loadingAll, setLoadingAll] = useState(true);
   const [error, setError] = useState("");
@@ -388,6 +390,7 @@ export default function AdminPortalPage() {
           description="Assign deliveries and manage delivery lifecycle statuses."
         >
           <DeliveryManagement
+            activeDeliveryView={activeDeliveryView}
             orders={orders}
             deliveryAssignForm={deliveryAssignForm}
             setDeliveryAssignForm={setDeliveryAssignForm}
