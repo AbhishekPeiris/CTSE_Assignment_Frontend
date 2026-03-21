@@ -1,19 +1,22 @@
 import React from 'react';
 
-const StatCard = ({ label, value, accentClass, valueClass = "text-slate-800" }) => (
-  <div className={`rounded-xl border border-slate-200 bg-white border-l-4 ${accentClass} px-5 py-5`}>
-    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{label}</p>
-    <p className={`mt-3 text-3xl font-bold ${valueClass}`}>{value}</p>
+const StatCard = ({ label, value, valueClass = "text-slate-800", unit }) => (
+  <div className="rounded-2xl border border-[#e5edf8] bg-[#f9fbff] px-5 py-5">
+    <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{label}</p>
+    <p className="mt-2 flex items-baseline gap-2">
+      <span className={`text-3xl font-black ${valueClass}`}>{value}</span>
+      {unit && <span className="text-sm font-medium text-slate-400">{unit}</span>}
+    </p>
   </div>
 );
 
 const DeliveryStats = ({ pendingCount, inTransitCount, totalCount, usersCount }) => {
   return (
     <div className="grid flex-1 grid-cols-2 gap-3 md:grid-cols-4 mb-6">
-      <StatCard label="Pending Assign"   value={pendingCount}   accentClass="border-l-amber-400"   valueClass="text-amber-600" />
-      <StatCard label="In Transit"       value={inTransitCount} accentClass="border-l-[#1d4ed8]"   valueClass="text-[#1d4ed8]" />
-      <StatCard label="Total Deliveries" value={totalCount}     accentClass="border-l-indigo-400"  valueClass="text-indigo-600" />
-      <StatCard label="Delivery Users"   value={usersCount}     accentClass="border-l-slate-400"   valueClass="text-slate-700" />
+      <StatCard label="Pending Assign"   value={pendingCount}   valueClass="text-amber-500"    unit="orders" />
+      <StatCard label="In Transit"       value={inTransitCount} valueClass="text-blue-600"     unit="active" />
+      <StatCard label="Total Deliveries" value={totalCount}     valueClass="text-indigo-600"   unit="total" />
+      <StatCard label="Delivery Users"   value={usersCount}     valueClass="text-slate-800"    unit="drivers" />
     </div>
   );
 };

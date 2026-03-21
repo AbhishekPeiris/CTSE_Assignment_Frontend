@@ -1,5 +1,10 @@
 import React from "react";
 
+const inputClass =
+  "w-full rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/10 placeholder:text-[#c4bfb7]";
+
+const labelClass = "text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]";
+
 const ProductDrawer = ({
   isOpen,
   onClose,
@@ -13,158 +18,136 @@ const ProductDrawer = ({
 
   return (
     <>
-      <div
-        className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
-      />
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white p-6 shadow-xl transition-transform duration-300 ease-in-out sm:rounded-l-[2rem]">
+      <div className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-sm" onClick={onClose} />
+
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#fffdfa] border-l border-[#e7e5df]">
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between pb-6">
-            <h2 className="text-xl font-bold text-slate-800">Add New Product</h2>
-            <button
-              onClick={onClose}
-              className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+
+          {/* Header */}
+          <div className="border-b border-[#efeae2] bg-[#fcfaf6] px-6 py-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">Products</p>
+            <h2 className="mt-1 text-2xl font-semibold tracking-[-0.02em] text-[#111827]">Add New Product</h2>
+            <p className="mt-1 text-sm text-[#8b95a7]">Fill in the details to create a new product.</p>
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-200">
-            <div className="space-y-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500" htmlFor="name">
-                  Product Name
-                </label>
-                <input
-                  id="name"
-                  value={productForm.name}
-                  onChange={(event) =>
-                    setProductForm((prev) => ({
-                      ...prev,
-                      name: event.target.value,
-                    }))
-                  }
-                  placeholder="Enter product name"
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
-                />
-              </div>
+          {/* Close */}
+          <button
+            onClick={onClose}
+            className="absolute right-5 top-5 rounded-xl border border-[#e4ddd2] bg-white p-2 text-[#9a8f7a] transition hover:bg-[#f5f0ea] hover:text-[#111827]"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500" htmlFor="category">
-                  Category
-                </label>
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="name">Product Name</label>
+              <input
+                id="name"
+                value={productForm.name}
+                onChange={(e) => setProductForm((p) => ({ ...p, name: e.target.value }))}
+                placeholder="e.g. Organic Apples"
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="category">Category</label>
+              <div className="relative">
                 <select
                   id="category"
                   value={productForm.category}
-                  onChange={(event) =>
-                    setProductForm((prev) => ({
-                      ...prev,
-                      category: event.target.value,
-                    }))
-                  }
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+                  onChange={(e) => setProductForm((p) => ({ ...p, category: e.target.value }))}
+                  className={inputClass + " appearance-none cursor-pointer"}
                 >
                   <option value="">Select a category</option>
                   {(categories || []).map((cat) => (
                     <option key={cat._id} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-500" htmlFor="price">
-                    Price
-                  </label>
-                  <input
-                    id="price"
-                    type="number"
-                    min="0"
-                    value={productForm.price}
-                    onChange={(event) =>
-                      setProductForm((prev) => ({
-                        ...prev,
-                        price: event.target.value,
-                      }))
-                    }
-                    placeholder="0.00"
-                    className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-500" htmlFor="stock">
-                    Stock
-                  </label>
-                  <input
-                    id="stock"
-                    type="number"
-                    min="0"
-                    value={productForm.stock}
-                    onChange={(event) =>
-                      setProductForm((prev) => ({
-                        ...prev,
-                        stock: event.target.value,
-                      }))
-                    }
-                    placeholder="0"
-                    className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
-                  />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-[#9a8f7a]">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
                 </div>
               </div>
+            </div>
 
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500" htmlFor="imageUrl">
-                  Image URL
-                </label>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label className={labelClass} htmlFor="price">Price</label>
                 <input
-                  id="imageUrl"
-                  value={productForm.imageUrl}
-                  onChange={(event) =>
-                    setProductForm((prev) => ({
-                      ...prev,
-                      imageUrl: event.target.value,
-                    }))
-                  }
-                  placeholder="Enter image URL (optional)"
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+                  id="price"
+                  type="number"
+                  min="0"
+                  value={productForm.price}
+                  onChange={(e) => setProductForm((p) => ({ ...p, price: e.target.value }))}
+                  placeholder="0.00"
+                  className={inputClass}
                 />
               </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500" htmlFor="description">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  rows={4}
-                  value={productForm.description}
-                  onChange={(event) =>
-                    setProductForm((prev) => ({
-                      ...prev,
-                      description: event.target.value,
-                    }))
-                  }
-                  placeholder="Enter product description"
-                  className="resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10"
+              <div className="flex flex-col gap-2">
+                <label className={labelClass} htmlFor="stock">Stock</label>
+                <input
+                  id="stock"
+                  type="number"
+                  min="0"
+                  value={productForm.stock}
+                  onChange={(e) => setProductForm((p) => ({ ...p, stock: e.target.value }))}
+                  placeholder="0"
+                  className={inputClass}
                 />
               </div>
             </div>
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="imageUrl">
+                Image URL <span className="normal-case tracking-normal text-[#b8af9f]">(optional)</span>
+              </label>
+              <input
+                id="imageUrl"
+                value={productForm.imageUrl}
+                onChange={(e) => setProductForm((p) => ({ ...p, imageUrl: e.target.value }))}
+                placeholder="https://example.com/image.png"
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="description">Description</label>
+              <textarea
+                id="description"
+                rows={4}
+                value={productForm.description}
+                onChange={(e) => setProductForm((p) => ({ ...p, description: e.target.value }))}
+                placeholder="Short product description..."
+                className={inputClass + " resize-none"}
+              />
+            </div>
+
+            {/* Preview pill when ready */}
+            {productForm.name && productForm.price && productForm.category && (
+              <div className="rounded-[22px] border border-[#e5ede5] bg-[#f3fbf5] px-4 py-3.5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#15803d]">Ready to create</p>
+                <p className="mt-1 text-sm text-[#374151]">
+                  <span className="font-semibold">{productForm.name}</span> · {productForm.category} · ${productForm.price}
+                </p>
+              </div>
+            )}
           </div>
 
-          <div className="border-t border-slate-100 pt-6 mt-6">
+          {/* Footer */}
+          <div className="border-t border-[#efeae2] bg-[#fcfaf6] px-6 py-5">
             <button
               type="button"
-              onClick={() => {
-                handleProductCreate();
-                onClose();
-              }}
+              onClick={() => { handleProductCreate(); onClose(); }}
               disabled={actionLoading === "create-product" || !productForm.name || !productForm.price || !productForm.category}
-              className="w-full rounded-xl bg-[#1d4ed8] px-6 py-4 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition-all hover:bg-[#1e40af] hover:shadow-blue-600/30 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+              className="w-full rounded-2xl bg-[#1d4ed8] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#1e40af] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {actionLoading === "create-product" ? "Creating Product..." : "Create Product"}
+              {actionLoading === "create-product" ? "Creating..." : "Create Product"}
             </button>
           </div>
         </div>
