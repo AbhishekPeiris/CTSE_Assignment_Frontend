@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { AuthService } from "../../../../services/auth.service";
 import { OrderService } from "../../../../services/order.service";
 import { resolveEntityId } from "../../../../utils/helpers";
 
@@ -25,25 +26,29 @@ export function useOrderStore({
   loadDeliveries,
 }) {
   const [orderForm, setOrderForm] = useState(INITIAL_ORDER_FORM);
+  const [orderCustomer, setOrderCustomer] = useState(null);
   const [orderStatusDrafts, setOrderStatusDrafts] = useState({});
   const [orderAssignmentDrafts, setOrderAssignmentDrafts] = useState({});
 
-  const selectedProductForOrder = useMemo(() => {
-    return (
-      products.find(
-        (product) => resolveEntityId(product) === orderForm.selectedProductId,
-      ) || null
-    );
-  }, [orderForm.selectedProductId, products]);
+  const handleAddItemToOrderDraft = (
+    productIdOverride = "",
+    quantityOverride = "",
+  ) => {
+    const productIdToAdd = productIdOverride || orderForm.selectedProductId;
+    const productToAdd =
+      products.find((product) => resolveEntityId(product) === productIdToAdd) ||
+      null;
 
-  const handleAddItemToOrderDraft = () => {
-    if (!selectedProductForOrder) {
+    if (!productToAdd) {
       setError("Select a product before adding items.");
       return;
     }
 
-    const quantity = Math.max(1, Number(orderForm.selectedQuantity || 1));
-    const stock = Number(selectedProductForOrder.stock || 0);
+    const quantity = Math.max(
+      1,
+      Number(quantityOverride || orderForm.selectedQuantity || 1),
+    );
+    const stock = Number(productToAdd.stock || 0);
 
     if (quantity > stock) {
       setError("Requested quantity exceeds current stock.");
@@ -52,7 +57,7 @@ export function useOrderStore({
 
     setOrderForm((prev) => {
       const existingIndex = prev.items.findIndex(
-        (item) => item.productId === prev.selectedProductId,
+        (item) => item.productId === productIdToAdd,
       );
 
       if (existingIndex >= 0) {
@@ -68,19 +73,24 @@ export function useOrderStore({
         return {
           ...prev,
           items: nextItems,
+          selectedProductId: productIdToAdd,
           selectedQuantity: "1",
         };
       }
 
       return {
         ...prev,
+        selectedProductId: productIdToAdd,
         items: [
           ...prev.items,
           {
-            productId: prev.selectedProductId,
-            name: selectedProductForOrder.name,
+            productId: productIdToAdd,
+            name: productToAdd.name,
             quantity,
             stock,
+            price: Number(productToAdd.price || 0),
+            imageUrl: productToAdd.imageUrl || "",
+            category: productToAdd.category || "",
           },
         ],
         selectedQuantity: "1",
@@ -88,6 +98,38 @@ export function useOrderStore({
     });
 
     setError("");
+  };
+
+  const handleLookupOrCreateOrderCustomer = async () => {
+    const contactNumber = orderForm.customerContactNumber.trim();
+
+    if (!contactNumber) {
+      setError("Customer contact number is required.");
+      return;
+    }
+
+    await runAction(
+      "order-customer-lookup",
+      async () => {
+        const response = await AuthService.lookupOrCreateCustomer({
+          contactNumber,
+          name: orderForm.customerName.trim() || undefined,
+        });
+
+        const customer = response?.user || response;
+
+        setOrderCustomer(customer);
+        setOrderForm((prev) => ({
+          ...prev,
+          customerContactNumber:
+            customer?.contactNumber || prev.customerContactNumber,
+          customerName: customer?.name || prev.customerName,
+        }));
+
+        await loadUsers();
+      },
+      "Customer is ready for order placement.",
+    );
   };
 
   const handleCreateOrderByAdmin = async () => {
@@ -98,6 +140,14 @@ export function useOrderStore({
 
     if (!orderForm.items.length) {
       setError("Please add at least one item for the order.");
+      return;
+    }
+
+    if (
+      !orderCustomer ||
+      orderCustomer.contactNumber !== orderForm.customerContactNumber.trim()
+    ) {
+      setError("Lookup or create the customer before placing the order.");
       return;
     }
 
@@ -132,6 +182,7 @@ export function useOrderStore({
         });
 
         setOrderForm(INITIAL_ORDER_FORM);
+        setOrderCustomer(null);
         await Promise.all([loadOrders(), loadUsers(), loadProducts()]);
       },
       "Order created for customer.",
@@ -212,11 +263,14 @@ export function useOrderStore({
   return {
     orderForm,
     setOrderForm,
+    orderCustomer,
+    setOrderCustomer,
     orderStatusDrafts,
     setOrderStatusDrafts,
     orderAssignmentDrafts,
     setOrderAssignmentDrafts,
     handleAddItemToOrderDraft,
+    handleLookupOrCreateOrderCustomer,
     handleCreateOrderByAdmin,
     handleAssignDeliveryToOrder,
     handleOrderStatusUpdate,
