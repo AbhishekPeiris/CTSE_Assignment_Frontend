@@ -168,7 +168,7 @@ const OrderSection = ({
                   <p className="truncate text-sm font-semibold text-word">
                     {item.name}
                   </p>
-                  <p className="mt-1 text-xs text-[#6b7280]">
+                  <p className="mt-1 text-xs text-word">
                     {formatMoney(item.price || 0)} each
                   </p>
                 </div>
@@ -291,8 +291,8 @@ const OrderSection = ({
           </div>
         </div>
 
-        <div className="mt-6 rounded-[28px] border border-line bg-[#fffdfa] p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)]">
-          <div className="flex items-center justify-between text-sm text-[#6b7280]">
+        <div className="mt-3 rounded-2xl gradient-border bg-white p-4 shadow-xl">
+          <div className="flex items-center justify-between text-sm text-word">
             <span>Subtotal</span>
             <span className="font-semibold text-[#111827]">
               {formatMoney(subtotal)}
@@ -313,22 +313,20 @@ const OrderSection = ({
               placeholder="Loyalty points"
               className="w-32 rounded-2xl border border-line bg-white px-4 py-3 text-sm text-[#111827]"
             />
-            <p className="text-sm text-[#6b7280]">
+            <p className="text-sm text-word">
               Available: <span className="font-semibold">{loyaltyBalance}</span>
             </p>
           </div>
-          <div className="mt-3 flex items-center justify-between text-sm text-[#6b7280]">
+          <div className="mt-3 flex items-center justify-between text-sm text-word">
             <span>Loyalty redemption</span>
-            <span className="font-semibold text-[#166534]">
+            <span className="font-semibold text-success">
               - {formatMoney(loyaltyRedemptionValue)}
             </span>
           </div>
           <div className="mt-4 border-t border-[#efeae2] pt-4">
             <div className="flex items-center justify-between">
-              <span className="text-base font-semibold text-[#374151]">
-                Total
-              </span>
-              <span className="text-[26px] font-semibold tracking-[-0.03em] text-[#111827]">
+              <span className="text-base font-semibold text-word">Total</span>
+              <span className="text-[26px] font-semibold tracking-[-0.03em] text-label">
                 {formatMoney(total)}
               </span>
             </div>
@@ -337,7 +335,7 @@ const OrderSection = ({
             type="button"
             onClick={handleCreateOrderByAdmin}
             disabled={actionLoading === "create-admin-order"}
-            className="mt-5 w-full rounded-[22px] bg-[#8f8a83] px-4 py-4 text-sm font-semibold text-white transition hover:bg-[#7e786f] disabled:opacity-50"
+            className="mt-5 w-full rounded-full bg-primary px-4 py-4 text-sm font-semibold text-white transition hover:bg-primary/80 disabled:opacity-50 shadow-lg"
           >
             {actionLoading === "create-admin-order"
               ? "Creating order..."
