@@ -7,11 +7,12 @@ import Register from "../../features/auth/pages/Register";
 import RoleAwareHome from "./RoleAwareHome";
 import UserOrdersPage from "../../features/client/pages/UserOrdersPage";
 import UserOrderTrackingPage from "../../features/client/pages/UserOrderTrackingPage";
-import ClientNavBar from "../../features/client/components/ClientNavBar";
 import { useAppContext } from "../../app/providers/AppProvider";
 import { resolveRole } from "../../utils/helpers";
 import AdminPortalPage from "../../features/admin/pages/AdminPortalPage";
 import DeliveryPortalPage from "../../features/deliveries/pages/DeliveryPortalPage";
+import ClientNavBar from "../../components/layout/client/ClientNavBar";
+import AdminLayout from "../../components/layout/admin/AdminLayout";
 
 export default function AppRouter() {
   const { auth, logout } = useAppContext();
@@ -63,7 +64,9 @@ export default function AppRouter() {
         path="/admin-portal"
         element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
-            <AdminPortalPage />
+            <AdminLayout>
+              <AdminPortalPage />
+            </AdminLayout>
           </ProtectedRoute>
         }
       />
