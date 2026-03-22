@@ -127,10 +127,10 @@ const CategoryManagement = ({
 
   return (
     <>
-      <div className="overflow-hidden rounded-[28px] border border-[#ece6dc] bg-[#fffdfa]">
+      <div className="overflow-hidden rounded-[28px] border border-[#ece6dc] ">
 
         {/* Table Header */}
-        <div className="border-b border-[#efeae2] bg-[#fcfaf6] px-6 py-4 flex items-center justify-between">
+        <div className=" px-6 py-4 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">Catalogue</p>
             <h3 className="mt-0.5 text-base font-semibold text-[#111827]">
@@ -152,7 +152,7 @@ const CategoryManagement = ({
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left">
-            <thead className="bg-[#fdfaf5] border-b border-[#efeae2]">
+            <thead className="border-b border-[#efeae2]">
               <tr>
                 <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">#</th>
                 <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">Category Name</th>
