@@ -1,4 +1,9 @@
+import { useState } from "react";
 import { formatMoney, resolveEntityId } from "../../../../utils/helpers";
+import ProductSummary from "./ProductSummary";
+import ProductDrawer from "./ProductDrawer";
+import EditProductDrawer from "./EditProductDrawer";
+import ProductDetailsDrawer from "./ProductDetailsDrawer";
 
 const ProductManagement = ({
   productForm,
@@ -6,266 +11,185 @@ const ProductManagement = ({
   handleProductCreate,
   actionLoading,
   products,
+  categories,
   setEditingProduct,
   handleProductDelete,
   editingProduct,
   handleProductUpdate,
 }) => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [viewingProduct, setViewingProduct] = useState(null);
+
   return (
     <>
-      <div className="rounded-xl border border-[#e5edf8] bg-[#f9fbff] p-4">
-        <div className="grid gap-2 md:grid-cols-2">
-          <input
-            value={productForm.name}
-            onChange={(event) =>
-              setProductForm((prev) => ({
-                ...prev,
-                name: event.target.value,
-              }))
-            }
-            placeholder="Product name"
-            className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm outline-none focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#dbeafe]"
-          />
-          <input
-            value={productForm.category}
-            onChange={(event) =>
-              setProductForm((prev) => ({
-                ...prev,
-                category: event.target.value,
-              }))
-            }
-            placeholder="Category"
-            className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm outline-none focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#dbeafe]"
-          />
-          <input
-            type="number"
-            min="0"
-            value={productForm.price}
-            onChange={(event) =>
-              setProductForm((prev) => ({
-                ...prev,
-                price: event.target.value,
-              }))
-            }
-            placeholder="Price"
-            className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm outline-none focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#dbeafe]"
-          />
-          <input
-            type="number"
-            min="0"
-            value={productForm.stock}
-            onChange={(event) =>
-              setProductForm((prev) => ({
-                ...prev,
-                stock: event.target.value,
-              }))
-            }
-            placeholder="Stock"
-            className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm outline-none focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#dbeafe]"
-          />
-          <input
-            value={productForm.imageUrl}
-            onChange={(event) =>
-              setProductForm((prev) => ({
-                ...prev,
-                imageUrl: event.target.value,
-              }))
-            }
-            placeholder="Image URL (optional)"
-            className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm outline-none focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#dbeafe] md:col-span-2"
-          />
-          <textarea
-            rows={2}
-            value={productForm.description}
-            onChange={(event) =>
-              setProductForm((prev) => ({
-                ...prev,
-                description: event.target.value,
-              }))
-            }
-            placeholder="Description"
-            className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm outline-none focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#dbeafe] md:col-span-2"
-          />
-        </div>
+      <ProductSummary products={products} />
 
+      <div className="mb-4 mt-2 flex items-center justify-between">
+        <h2 className="text-lg font-bold text-[#0f172a]">Products List</h2>
         <button
-          type="button"
-          onClick={handleProductCreate}
-          disabled={actionLoading === "create-product"}
-          className="mt-3 rounded-full bg-[#1d4ed8] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#1e40af] disabled:opacity-50"
+          onClick={() => setIsDrawerOpen(true)}
+          className="rounded-full bg-[#1d4ed8] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#1e40af]"
         >
-          {actionLoading === "create-product"
-            ? "Creating..."
-            : "Create Product"}
+          + Add Product
         </button>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-[#e5edf8]">
-        <table className="min-w-full border-collapse">
-          <thead className="bg-[#f8fbff]">
-            <tr>
-              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-[#64748b]">
-                Name
-              </th>
-              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-[#64748b]">
-                Category
-              </th>
-              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-[#64748b]">
-                Price
-              </th>
-              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-[#64748b]">
-                Stock
-              </th>
-              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-[#64748b]">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => {
-              const id = resolveEntityId(product);
+      <ProductDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        productForm={productForm}
+        setProductForm={setProductForm}
+        handleProductCreate={handleProductCreate}
+        actionLoading={actionLoading}
+        categories={categories}
+      />
 
-              return (
-                <tr key={id} className="border-t border-[#edf2fb]">
-                  <td className="px-3 py-2 text-sm text-[#334155]">
-                    {product.name}
-                  </td>
-                  <td className="px-3 py-2 text-sm text-[#334155]">
-                    {product.category}
-                  </td>
-                  <td className="px-3 py-2 text-sm text-[#334155]">
-                    {formatMoney(product.price)}
-                  </td>
-                  <td className="px-3 py-2 text-sm text-[#334155]">
-                    {product.stock}
-                  </td>
-                  <td className="px-3 py-2 text-sm text-[#334155]">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setEditingProduct({
-                            ...product,
-                            price: String(product.price ?? ""),
-                            stock: String(product.stock ?? ""),
-                            imageUrl: product.imageUrl || "",
-                          })
-                        }
-                        className="rounded-full border border-[#d4dce9] px-3 py-1 text-xs font-semibold text-[#334155] transition hover:bg-[#f8fbff]"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleProductDelete(id)}
-                        disabled={actionLoading === `delete-product:${id}`}
-                        className="rounded-full bg-[#dc2626] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#b91c1c] disabled:opacity-50"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px] border-collapse bg-white text-left text-sm text-slate-800">
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="px-6 py-4 font-semibold text-slate-600">Product</th>
+                <th className="px-6 py-4 font-semibold text-slate-600">Category</th>
+                <th className="px-6 py-4 font-semibold text-slate-600 border-none">Price</th>
+                <th className="px-6 py-4 font-semibold text-slate-600 border-none">Stock</th>
+                <th className="px-6 py-4 font-semibold text-slate-600 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {products.map((product) => {
+                const id = resolveEntityId(product);
+                const isLowStock = parseInt(product.stock) < 10 && parseInt(product.stock) > 0;
+                const isOutOfStock = parseInt(product.stock) === 0;
+
+                return (
+                  <tr key={id} className="hover:bg-slate-50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm transition-transform group-hover:scale-105">
+                          {product.imageUrl ? (
+                            <img
+                              src={product.imageUrl}
+                              alt={product.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center bg-slate-100 text-lg font-bold text-slate-400">
+                              {product.name?.charAt(0)?.toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-bold text-slate-800">{product.name}</p>
+                          <p className="text-xs text-slate-500 line-clamp-1 max-w-[220px] mt-0.5">
+                            {product.description || "No description provided"}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
+                        {product.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 font-bold text-slate-800 text-[15px]">
+                      {formatMoney(product.price)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1.5 items-start">
+                        <span className="font-semibold text-slate-800">{product.stock} units</span>
+                        {isOutOfStock ? (
+                          <span className="inline-flex items-center rounded-full bg-red-50 py-0.5 px-2.5 text-[10px] font-bold uppercase tracking-wider text-red-600 shadow-sm ring-1 ring-inset ring-red-500/10">
+                            Out of Stock
+                          </span>
+                        ) : isLowStock ? (
+                          <span className="inline-flex items-center rounded-full bg-orange-50 py-0.5 px-2.5 text-[10px] font-bold uppercase tracking-wider text-orange-600 shadow-sm ring-1 ring-inset ring-orange-500/20">
+                            Low Stock
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center rounded-full bg-emerald-50 py-0.5 px-2.5 text-[10px] font-bold uppercase tracking-wider text-emerald-600 shadow-sm ring-1 ring-inset ring-emerald-500/10">
+                            In Stock
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setViewingProduct(product)}
+                          className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-700 hover:border-slate-300 active:scale-95"
+                          title="View Details"
+                        >
+                          <svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEditingProduct({
+                              ...product,
+                              price: String(product.price ?? ""),
+                              stock: String(product.stock ?? ""),
+                              imageUrl: product.imageUrl || "",
+                            })
+                          }
+                          className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 active:scale-95"
+                          title="Edit Product"
+                        >
+                          <svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleProductDelete(id)}
+                          disabled={actionLoading === `delete-product:${id}`}
+                          className="flex h-9 w-9 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600 hover:border-red-200 active:scale-95 disabled:opacity-50"
+                          title="Delete Product"
+                        >
+                          <svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {products.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 border border-slate-100 text-slate-300 mb-5 shadow-inner">
+                <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-800">No products found</h3>
+              <p className="mt-2 text-sm text-slate-500 max-w-sm mx-auto">Get started by adding a new product to your inventory list. It will appear here once created.</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {editingProduct ? (
-        <div className="mt-4 rounded-xl border border-[#e7d7c1] bg-[#fff8f1] p-4">
-          <p className="text-sm font-semibold text-[#0f172a]">Edit product</p>
-          <div className="grid gap-2 mt-3 md:grid-cols-2">
-            <input
-              value={editingProduct.name}
-              onChange={(event) =>
-                setEditingProduct((prev) => ({
-                  ...prev,
-                  name: event.target.value,
-                }))
-              }
-              placeholder="Name"
-              className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm"
-            />
-            <input
-              value={editingProduct.category}
-              onChange={(event) =>
-                setEditingProduct((prev) => ({
-                  ...prev,
-                  category: event.target.value,
-                }))
-              }
-              placeholder="Category"
-              className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm"
-            />
-            <input
-              type="number"
-              value={editingProduct.price}
-              onChange={(event) =>
-                setEditingProduct((prev) => ({
-                  ...prev,
-                  price: event.target.value,
-                }))
-              }
-              placeholder="Price"
-              className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm"
-            />
-            <input
-              type="number"
-              value={editingProduct.stock}
-              onChange={(event) =>
-                setEditingProduct((prev) => ({
-                  ...prev,
-                  stock: event.target.value,
-                }))
-              }
-              placeholder="Stock"
-              className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm"
-            />
-            <input
-              value={editingProduct.imageUrl}
-              onChange={(event) =>
-                setEditingProduct((prev) => ({
-                  ...prev,
-                  imageUrl: event.target.value,
-                }))
-              }
-              placeholder="Image URL"
-              className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm md:col-span-2"
-            />
-            <textarea
-              rows={2}
-              value={editingProduct.description}
-              onChange={(event) =>
-                setEditingProduct((prev) => ({
-                  ...prev,
-                  description: event.target.value,
-                }))
-              }
-              placeholder="Description"
-              className="rounded-xl border border-[#d4dce9] px-3 py-2 text-sm md:col-span-2"
-            />
-          </div>
+      <EditProductDrawer
+        isOpen={!!editingProduct}
+        onClose={() => setEditingProduct(null)}
+        editingProduct={editingProduct}
+        setEditingProduct={setEditingProduct}
+        handleProductUpdate={handleProductUpdate}
+        actionLoading={actionLoading}
+        categories={categories}
+      />
 
-          <div className="flex items-center gap-2 mt-3">
-            <button
-              type="button"
-              onClick={handleProductUpdate}
-              disabled={actionLoading.startsWith("update-product")}
-              className="rounded-full bg-[#1d4ed8] px-4 py-2 text-xs font-semibold text-white"
-            >
-              Save changes
-            </button>
-            <button
-              type="button"
-              onClick={() => setEditingProduct(null)}
-              className="rounded-full border border-[#d4dce9] px-4 py-2 text-xs font-semibold text-[#334155]"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      ) : null}
+      <ProductDetailsDrawer
+        isOpen={!!viewingProduct}
+        onClose={() => setViewingProduct(null)}
+        product={viewingProduct}
+      />
     </>
   );
 };

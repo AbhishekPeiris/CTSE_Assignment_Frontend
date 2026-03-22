@@ -25,6 +25,13 @@ const PRODUCTS = {
   RELEASE: (id) => `/products/${id}/release`,
 };
 
+const CATEGORIES = {
+  GET_ALL: "/products/categories",
+  CREATE: "/products/categories",
+  UPDATE: (id) => `/products/categories/${id}`,
+  DELETE: (id) => `/products/categories/${id}`,
+};
+
 const ORDERS = {
   GET_ALL: "/orders",
   GET_MY: "/orders/my",
@@ -57,6 +64,7 @@ export const API_ENDPOINTS = {
   AUTH,
   USERS,
   PRODUCTS,
+  CATEGORIES,
   ORDERS,
   DELIVERIES,
   HEALTH,
