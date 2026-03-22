@@ -1,0 +1,213 @@
+import React from "react";
+import PropTypes from "prop-types";
+
+const inputClass =
+  "w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-label outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-word/40";
+
+const labelClass = "text-[10px] font-semibold uppercase tracking-[0.2em] text-word";
+
+const EditProductDrawer = ({
+  isOpen,
+  onClose,
+  editingProduct,
+  setEditingProduct,
+  handleProductUpdate,
+  actionLoading,
+  categories,
+}) => {
+  if (!isOpen || !editingProduct) return null;
+
+  return (
+    <>
+      <button
+        type="button"
+        className="fixed inset-0 z-40 w-full h-full bg-label/30 backdrop-blur-sm cursor-default"
+        onClick={onClose}
+        aria-label="Close drawer"
+      />
+
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white border-l border-line shadow-2xl">
+        <div className="flex h-full flex-col">
+
+          {/* Header */}
+          <div className="border-b border-line bg-[#fcfaf6] px-6 py-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-word">Products</p>
+            <h2 className="mt-1 text-2xl font-semibold tracking-[-0.02em] text-label">Edit Product</h2>
+            <p className="mt-1 text-sm text-word/70">Update the details for this product.</p>
+          </div>
+
+          {/* Close */}
+          <button
+            onClick={onClose}
+            className="absolute right-5 top-5 rounded-xl border border-line bg-white p-2 text-word transition hover:bg-[#f5f0ea] hover:text-label"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="edit-name">Product Name</label>
+              <input
+                id="edit-name"
+                value={editingProduct.name}
+                onChange={(e) => setEditingProduct((p) => ({ ...p, name: e.target.value }))}
+                placeholder="e.g. Organic Apples"
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="edit-category">Category</label>
+              <div className="relative">
+                <select
+                  id="edit-category"
+                  value={editingProduct.category}
+                  onChange={(e) => setEditingProduct((p) => ({ ...p, category: e.target.value }))}
+                  className={inputClass + " appearance-none cursor-pointer"}
+                >
+                  <option value="">Select a category</option>
+                  {(categories || []).map((cat) => (
+                    <option key={cat._id} value={cat.name}>{cat.name}</option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-word">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="edit-status">Product Status</label>
+              <div className="relative">
+                <select
+                  id="edit-status"
+                  value={editingProduct.status}
+                  onChange={(e) => setEditingProduct((p) => ({ ...p, status: e.target.value }))}
+                  className={inputClass + " appearance-none cursor-pointer"}
+                >
+                  <option value="IN-STORE">IN-STORE</option>
+                  <option value="OUT-STORE">OUT-STORE</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-word">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label className={labelClass} htmlFor="edit-price">Price</label>
+                <input
+                  id="edit-price"
+                  type="number"
+                  min="0"
+                  value={editingProduct.price}
+                  onChange={(e) => setEditingProduct((p) => ({ ...p, price: e.target.value }))}
+                  placeholder="0.00"
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className={labelClass} htmlFor="edit-stock">Stock</label>
+                <input
+                  id="edit-stock"
+                  type="number"
+                  min="0"
+                  value={editingProduct.stock}
+                  onChange={(e) => setEditingProduct((p) => ({ ...p, stock: e.target.value }))}
+                  placeholder="0"
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="edit-imageUrl">
+                Image URL <span className="normal-case tracking-normal text-word/40">(optional)</span>
+              </label>
+              <input
+                id="edit-imageUrl"
+                value={editingProduct.imageUrl}
+                onChange={(e) => setEditingProduct((p) => ({ ...p, imageUrl: e.target.value }))}
+                placeholder="https://example.com/image.png"
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className={labelClass} htmlFor="edit-description">Description</label>
+              <textarea
+                id="edit-description"
+                rows={4}
+                value={editingProduct.description}
+                onChange={(e) => setEditingProduct((p) => ({ ...p, description: e.target.value }))}
+                placeholder="Short product description..."
+                className={inputClass + " resize-none"}
+              />
+            </div>
+
+            {/* Editing indicator */}
+            <div className="rounded-[22px] border border-warning/20 bg-warning/5 px-4 py-3.5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-warning">Editing</p>
+              <p className="mt-1 text-sm text-label">
+                Changes will be saved to <span className="font-semibold">{editingProduct.name || "this product"}</span>.
+              </p>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="border-t border-line bg-[#fcfaf6] px-6 py-5 flex gap-3">
+            <button
+              type="button"
+              onClick={() => { handleProductUpdate(); onClose(); }}
+              disabled={actionLoading.startsWith("update-product") || !editingProduct.name || !editingProduct.price || !editingProduct.category}
+              className="flex-1 rounded-2xl bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {actionLoading.startsWith("update-product") ? "Saving..." : "Save Changes"}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-2xl border border-line bg-white px-5 py-3.5 text-sm font-semibold text-word hover:bg-[#f5f0ea] transition hover:text-label"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+EditProductDrawer.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  editingProduct: PropTypes.shape({
+    name: PropTypes.string,
+    description: PropTypes.string,
+    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    stock: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    category: PropTypes.string,
+    status: PropTypes.string,
+    imageUrl: PropTypes.string,
+  }),
+  setEditingProduct: PropTypes.func.isRequired,
+  handleProductUpdate: PropTypes.func.isRequired,
+  actionLoading: PropTypes.string,
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string,
+      name: PropTypes.string,
+    })
+  ),
+};
+
+export default EditProductDrawer;
