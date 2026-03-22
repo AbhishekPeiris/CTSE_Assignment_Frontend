@@ -80,7 +80,10 @@ export default function StorefrontPage() {
     return [...values].sort((left, right) => left.localeCompare(right));
   }, [state.products]);
 
-  const cartSubtotal = useMemo(() => getCartSubtotal(clientState), [clientState]);
+  const cartSubtotal = useMemo(
+    () => getCartSubtotal(clientState),
+    [clientState],
+  );
   const cartItemCount = useMemo(() => getCartCount(clientState), [clientState]);
 
   const handleCartQuantityChange = (product, nextQuantity) => {
@@ -153,7 +156,11 @@ export default function StorefrontPage() {
         />
 
         <div className="rounded-3xl border border-[#d9e2ec] bg-white px-4 py-3 text-sm text-[#5f6368]">
-          Cart is saved in local storage. Continue checkout in <Link to="/cart" className="font-semibold text-[#1967d2]">Cart</Link>.
+          Cart is saved in local storage. Continue checkout in{" "}
+          <Link to="/cart" className="font-semibold text-[#1967d2]">
+            Cart
+          </Link>
+          .
         </div>
 
         <ErrorMessage message={state.error} />
@@ -161,7 +168,10 @@ export default function StorefrontPage() {
         {state.loading ? <Loader text="Loading products..." /> : null}
 
         {state.loading ? null : (
-          <ProductGrid products={state.products} getProductProps={getProductProps} />
+          <ProductGrid
+            products={state.products}
+            getProductProps={getProductProps}
+          />
         )}
       </div>
     </div>

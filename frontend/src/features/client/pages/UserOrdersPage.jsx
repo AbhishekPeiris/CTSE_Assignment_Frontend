@@ -1,5 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import ErrorMessage from "../../../components/ui/ErrorMessage";
 import Loader from "../../../components/ui/Loader";
 import StatusPill from "../../../components/ui/StatusPill";
@@ -13,6 +24,11 @@ import {
   resolveEntityId,
 } from "../../../utils/helpers";
 import LocationPickerMap from "../../../components/layout/LocationPickerMap";
+
+const CONFIRM_ACTIONS = {
+  UPDATE_ORDER: "update-order",
+  CANCEL_ORDER: "cancel-order",
+};
 
 function buildDraft(order) {
   return {
@@ -31,6 +47,8 @@ function buildDraft(order) {
 }
 
 export default function UserOrdersPage() {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [state, setState] = useState({ loading: true, error: "", orders: [] });
   const [actionError, setActionError] = useState("");
   const [actionSuccess, setActionSuccess] = useState("");
@@ -39,6 +57,27 @@ export default function UserOrdersPage() {
   const [editingOrderId, setEditingOrderId] = useState("");
   const [editDraft, setEditDraft] = useState(null);
   const [cancelReasonByOrder, setCancelReasonByOrder] = useState({});
+  const [confirmState, setConfirmState] = useState({
+    open: false,
+    type: "",
+    orderId: "",
+  });
+
+  const openConfirm = (type, orderId) => {
+    setConfirmState({
+      open: true,
+      type,
+      orderId,
+    });
+  };
+
+  const closeConfirm = () => {
+    setConfirmState({
+      open: false,
+      type: "",
+      orderId: "",
+    });
+  };
 
   const loadOrders = useCallback(async () => {
     setState((prev) => ({ ...prev, loading: true, error: "" }));
@@ -185,8 +224,8 @@ export default function UserOrdersPage() {
     } catch (error) {
       setActionError(
         error?.friendlyMessage ||
-          error?.message ||
-          "Failed to update pending order",
+        error?.message ||
+        "Failed to update pending order",
       );
     } finally {
       setActionLoading("");
@@ -219,6 +258,47 @@ export default function UserOrdersPage() {
       setActionLoading("");
     }
   };
+
+  const handleConfirmAction = async () => {
+    const { orderId, type } = confirmState;
+
+    if (!orderId) {
+      closeConfirm();
+      return;
+    }
+
+    if (type === CONFIRM_ACTIONS.UPDATE_ORDER) {
+      await handleSaveEdit(orderId);
+      closeConfirm();
+      return;
+    }
+
+    if (type === CONFIRM_ACTIONS.CANCEL_ORDER) {
+      await handleCancelOrder(orderId);
+      closeConfirm();
+    }
+  };
+
+  const isProcessingConfirmAction =
+    (confirmState.type === CONFIRM_ACTIONS.UPDATE_ORDER &&
+      actionLoading === `edit:${confirmState.orderId}`) ||
+    (confirmState.type === CONFIRM_ACTIONS.CANCEL_ORDER &&
+      actionLoading === `cancel:${confirmState.orderId}`);
+
+  const confirmTitle =
+    confirmState.type === CONFIRM_ACTIONS.UPDATE_ORDER
+      ? "Confirm order update"
+      : "Confirm order cancellation";
+
+  const confirmDescription =
+    confirmState.type === CONFIRM_ACTIONS.UPDATE_ORDER
+      ? "Do you want to update this pending order with your current changes?"
+      : "Do you want to cancel this pending order?";
+
+  const confirmButtonLabel =
+    confirmState.type === CONFIRM_ACTIONS.UPDATE_ORDER
+      ? "Update order"
+      : "Cancel order";
 
   return (
     <div className="relative mx-auto w-full max-w-[1180px] px-4 pb-10 pt-6 sm:px-6 lg:px-8">
@@ -389,7 +469,9 @@ export default function UserOrdersPage() {
                       <button
                         type="button"
                         disabled={actionLoading === `cancel:${orderId}`}
-                        onClick={() => handleCancelOrder(orderId)}
+                        onClick={() =>
+                          openConfirm(CONFIRM_ACTIONS.CANCEL_ORDER, orderId)
+                        }
                         className="px-3 py-1 text-xs font-semibold text-white transition rounded-full bg-danger hover:bg-danger/80 disabled:opacity-50"
                       >
                         {actionLoading === `cancel:${orderId}`
@@ -472,7 +554,9 @@ export default function UserOrdersPage() {
                         <button
                           type="button"
                           disabled={actionLoading === `edit:${orderId}`}
-                          onClick={() => handleSaveEdit(orderId)}
+                          onClick={() =>
+                            openConfirm(CONFIRM_ACTIONS.UPDATE_ORDER, orderId)
+                          }
                           className="px-4 py-2 text-sm font-semibold text-white transition rounded-full bg-primary hover:bg-primary/80 disabled:opacity-50"
                         >
                           {actionLoading === `edit:${orderId}`
@@ -488,6 +572,60 @@ export default function UserOrdersPage() {
           })}
         </div>
       )}
+
+      <Dialog
+        open={confirmState.open}
+        onClose={closeConfirm}
+        fullScreen={fullScreen}
+        fullWidth
+        maxWidth="sm"
+        slotProps={{
+          paper: {
+            sx: {
+              backgroundColor: "#fff",
+            },
+          },
+        }}
+      >
+        <DialogTitle>{confirmTitle}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{confirmDescription}</DialogContentText>
+          {confirmState.type === CONFIRM_ACTIONS.CANCEL_ORDER ? (
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Reason (optional)"
+              fullWidth
+              multiline
+              minRows={3}
+              value={cancelReasonByOrder[confirmState.orderId] || ""}
+              onChange={(event) =>
+                setCancelReasonByOrder((prev) => ({
+                  ...prev,
+                  [confirmState.orderId]: event.target.value,
+                }))
+              }
+            />
+          ) : null}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeConfirm} disabled={isProcessingConfirmAction}>
+            Close
+          </Button>
+          <Button
+            onClick={handleConfirmAction}
+            variant="contained"
+            color={
+              confirmState.type === CONFIRM_ACTIONS.CANCEL_ORDER
+                ? "error"
+                : "primary"
+            }
+            disabled={isProcessingConfirmAction}
+          >
+            {isProcessingConfirmAction ? "Processing..." : confirmButtonLabel}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
