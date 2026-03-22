@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 const inputClass =
-  "w-full rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/10 placeholder:text-[#c4bfb7]";
+  "w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-label outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-word/40";
 
-const labelClass = "text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]";
+const labelClass = "text-[10px] font-semibold uppercase tracking-[0.2em] text-word";
 
 function CategoryDrawer({ isOpen, onClose, title, subtitle, form, setForm, onSubmit, submitLabel, actionKey, actionLoading, indicatorVariant }) {
   if (!isOpen) return null;
@@ -12,22 +12,22 @@ function CategoryDrawer({ isOpen, onClose, title, subtitle, form, setForm, onSub
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-40 bg-label/30 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#fffdfa] border-l border-[#e7e5df]">
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white border-l border-line shadow-2xl">
         <div className="flex h-full flex-col">
 
           {/* Header */}
-          <div className="border-b border-[#efeae2] bg-[#fcfaf6] px-6 py-5">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">Categories</p>
-            <h2 className="mt-1 text-2xl font-semibold tracking-[-0.02em] text-[#111827]">{title}</h2>
-            <p className="mt-1 text-sm text-[#8b95a7]">{subtitle}</p>
+          <div className="border-b border-line bg-[#f0f7ff] px-6 py-5 text-primary">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 text-primary">Categories</p>
+            <h2 className="mt-1 text-2xl font-black tracking-[-0.02em] text-label">{title}</h2>
+            <p className="mt-1 text-sm text-word/60">{subtitle}</p>
           </div>
 
           {/* Close */}
           <button
             onClick={onClose}
-            className="absolute right-5 top-5 rounded-xl border border-[#e4ddd2] bg-white p-2 text-[#9a8f7a] transition hover:bg-[#f5f0ea] hover:text-[#111827]"
+            className="absolute right-5 top-5 rounded-xl border border-line bg-white p-2 text-word transition hover:bg-[#f0f7ff] hover:text-primary"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -49,7 +49,7 @@ function CategoryDrawer({ isOpen, onClose, title, subtitle, form, setForm, onSub
 
             <div className="flex flex-col gap-2">
               <label className={labelClass}>
-                Description <span className="normal-case tracking-normal text-[#b8af9f]">(optional)</span>
+                Description <span className="normal-case tracking-normal text-word/40">(optional)</span>
               </label>
               <input
                 value={form.description}
@@ -63,13 +63,13 @@ function CategoryDrawer({ isOpen, onClose, title, subtitle, form, setForm, onSub
             {form.name.trim() && (
               <div className={`rounded-[22px] border px-4 py-3.5 ${
                 isEdit
-                  ? "border-[#efe7dc] bg-[#fff8ee]"
-                  : "border-[#e5ede5] bg-[#f3fbf5]"
+                  ? "border-warning/20 bg-warning/5"
+                  : "border-success/20 bg-success/5"
               }`}>
-                <p className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${isEdit ? "text-[#a16207]" : "text-[#15803d]"}`}>
+                <p className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${isEdit ? "text-warning" : "text-success"}`}>
                   {isEdit ? "Editing" : "Ready to create"}
                 </p>
-                <p className="mt-1 text-sm text-[#374151]">
+                <p className="mt-1 text-sm text-label">
                   {isEdit ? "Saving changes to" : "New category:"}{" "}
                   <span className="font-semibold">{form.name}</span>
                 </p>
@@ -78,12 +78,12 @@ function CategoryDrawer({ isOpen, onClose, title, subtitle, form, setForm, onSub
           </div>
 
           {/* Footer */}
-          <div className="border-t border-[#efeae2] bg-[#fcfaf6] px-6 py-5">
+          <div className="border-t border-line bg-[#fcfaf6] px-6 py-5">
             <button
               type="button"
               onClick={onSubmit}
               disabled={!form.name.trim() || actionLoading === actionKey}
-              className="w-full rounded-2xl bg-[#1d4ed8] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#1e40af] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-2xl bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {actionLoading === actionKey ? "Saving..." : submitLabel}
             </button>
@@ -127,15 +127,15 @@ const CategoryManagement = ({
 
   return (
     <>
-      <div className="overflow-hidden rounded-[28px] border border-[#ece6dc] ">
+      <div className="overflow-hidden rounded-[28px] border border-line bg-white shadow-sm">
 
         {/* Table Header */}
-        <div className=" px-6 py-4 flex items-center justify-between">
+        <div className="bg-[#f0f7ff] border-b border-line px-6 py-4 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">Catalogue</p>
-            <h3 className="mt-0.5 text-base font-semibold text-[#111827]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">Catalogue</p>
+            <h3 className="mt-0.5 text-base font-black text-label">
               All Categories
-              <span className="ml-2 rounded-xl border border-[#e4ddd2] bg-white px-2.5 py-0.5 text-xs font-semibold text-[#6b7280]">
+              <span className="ml-2 rounded-xl border border-line bg-white px-2.5 py-0.5 text-xs font-bold text-primary/70">
                 {categories.length}
               </span>
             </h3>
@@ -143,7 +143,7 @@ const CategoryManagement = ({
           <button
             type="button"
             onClick={() => { setAddForm({ name: "", description: "" }); setAddOpen(true); }}
-            className="rounded-2xl bg-[#1d4ed8] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#1e40af]"
+            className="rounded-2xl bg-primary px-4 py-2 text-xs font-semibold text-white transition hover:bg-primary/90"
           >
             + Add Category
           </button>
@@ -152,34 +152,34 @@ const CategoryManagement = ({
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left">
-            <thead className="border-b border-[#efeae2]">
+            <thead className="border-b border-line">
               <tr>
-                <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">#</th>
-                <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">Category Name</th>
-                <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">Description</th>
-                <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a] text-right">Actions</th>
+                <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-word">#</th>
+                <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-word">Category Name</th>
+                <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-word">Description</th>
+                <th className="px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-word text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#f0ebe3]">
+            <tbody className="divide-y divide-line/30">
               {categories.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-14 text-center text-sm text-[#8b95a7]">
-                    No categories yet. Click <span className="font-semibold text-[#6b7280]">+ Add Category</span> to create one.
+                  <td colSpan={4} className="px-6 py-14 text-center text-sm text-word/50">
+                    No categories yet. Click <span className="font-semibold text-word/70">+ Add Category</span> to create one.
                   </td>
                 </tr>
               ) : (
                 categories.map((cat, index) => (
-                  <tr key={cat._id} className="transition-colors hover:bg-[#fdfaf5]">
-                    <td className="px-6 py-4 text-sm text-[#9a8f7a]">{index + 1}</td>
-                    <td className="px-6 py-4 text-sm font-semibold text-[#111827]">{cat.name}</td>
-                    <td className="px-6 py-4 text-sm text-[#6b7280]">{cat.description || "—"}</td>
+                  <tr key={cat._id} className="transition-colors hover:bg-[#fcfaf6]">
+                    <td className="px-6 py-4 text-sm text-word/60">{index + 1}</td>
+                    <td className="px-6 py-4 text-sm font-semibold text-label">{cat.name}</td>
+                    <td className="px-6 py-4 text-sm text-word/70">{cat.description || "—"}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         {/* Edit */}
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(cat)}
-                          className="flex h-8 w-8 items-center justify-center rounded-xl border border-[#e4ddd2] bg-white text-[#9a8f7a] transition hover:border-[#1d4ed8] hover:text-[#1d4ed8] hover:bg-[#f9fbff]"
+                          className="flex h-8 w-8 items-center justify-center rounded-xl border border-line bg-white text-word transition hover:border-primary hover:text-primary hover:bg-primary/5"
                           title="Edit"
                         >
                           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -191,7 +191,7 @@ const CategoryManagement = ({
                           type="button"
                           onClick={() => onCategoryDelete(cat._id)}
                           disabled={actionLoading === `delete-category:${cat._id}`}
-                          className="flex h-8 w-8 items-center justify-center rounded-xl border border-[#e4ddd2] bg-white text-[#9a8f7a] transition hover:border-[#fecaca] hover:text-[#b91c1c] hover:bg-[#fff1f2] disabled:opacity-50"
+                          className="flex h-8 w-8 items-center justify-center rounded-xl border border-line bg-white text-word transition hover:border-danger hover:text-danger hover:bg-danger/5 disabled:opacity-50"
                           title="Delete"
                         >
                           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

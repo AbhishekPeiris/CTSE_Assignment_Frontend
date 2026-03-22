@@ -1,9 +1,9 @@
 import React from "react";
 
 const inputClass =
-  "w-full rounded-2xl border border-[#e4ddd2] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/10 placeholder:text-[#c4bfb7]";
+  "w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-label outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-word/40";
 
-const labelClass = "text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]";
+const labelClass = "text-[10px] font-semibold uppercase tracking-[0.2em] text-word";
 
 const EditProductDrawer = ({
   isOpen,
@@ -18,22 +18,22 @@ const EditProductDrawer = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-40 bg-label/30 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#fffdfa] border-l border-[#e7e5df]">
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white border-l border-line shadow-2xl">
         <div className="flex h-full flex-col">
 
           {/* Header */}
-          <div className="border-b border-[#efeae2] bg-[#fcfaf6] px-6 py-5">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a8f7a]">Products</p>
-            <h2 className="mt-1 text-2xl font-semibold tracking-[-0.02em] text-[#111827]">Edit Product</h2>
-            <p className="mt-1 text-sm text-[#8b95a7]">Update the details for this product.</p>
+          <div className="border-b border-line bg-[#fcfaf6] px-6 py-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-word">Products</p>
+            <h2 className="mt-1 text-2xl font-semibold tracking-[-0.02em] text-label">Edit Product</h2>
+            <p className="mt-1 text-sm text-word/70">Update the details for this product.</p>
           </div>
 
           {/* Close */}
           <button
             onClick={onClose}
-            className="absolute right-5 top-5 rounded-xl border border-[#e4ddd2] bg-white p-2 text-[#9a8f7a] transition hover:bg-[#f5f0ea] hover:text-[#111827]"
+            className="absolute right-5 top-5 rounded-xl border border-line bg-white p-2 text-word transition hover:bg-[#f5f0ea] hover:text-label"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -68,7 +68,7 @@ const EditProductDrawer = ({
                     <option key={cat._id} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-[#9a8f7a]">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-word">
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                   </svg>
@@ -105,7 +105,7 @@ const EditProductDrawer = ({
 
             <div className="flex flex-col gap-2">
               <label className={labelClass} htmlFor="edit-imageUrl">
-                Image URL <span className="normal-case tracking-normal text-[#b8af9f]">(optional)</span>
+                Image URL <span className="normal-case tracking-normal text-word/40">(optional)</span>
               </label>
               <input
                 id="edit-imageUrl"
@@ -129,28 +129,28 @@ const EditProductDrawer = ({
             </div>
 
             {/* Editing indicator */}
-            <div className="rounded-[22px] border border-[#efe7dc] bg-[#fff8ee] px-4 py-3.5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#a16207]">Editing</p>
-              <p className="mt-1 text-sm text-[#374151]">
+            <div className="rounded-[22px] border border-warning/20 bg-warning/5 px-4 py-3.5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-warning">Editing</p>
+              <p className="mt-1 text-sm text-label">
                 Changes will be saved to <span className="font-semibold">{editingProduct.name || "this product"}</span>.
               </p>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="border-t border-[#efeae2] bg-[#fcfaf6] px-6 py-5 flex gap-3">
+          <div className="border-t border-line bg-[#fcfaf6] px-6 py-5 flex gap-3">
             <button
               type="button"
               onClick={() => { handleProductUpdate(); onClose(); }}
               disabled={actionLoading.startsWith("update-product") || !editingProduct.name || !editingProduct.price || !editingProduct.category}
-              className="flex-1 rounded-2xl bg-[#1d4ed8] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#1e40af] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-2xl bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {actionLoading.startsWith("update-product") ? "Saving..." : "Save Changes"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="rounded-2xl border border-[#e4ddd2] bg-white px-5 py-3.5 text-sm font-semibold text-[#6b7280] transition hover:bg-[#f5f0ea] hover:text-[#111827]"
+              className="rounded-2xl border border-line bg-white px-5 py-3.5 text-sm font-semibold text-word hover:bg-[#f5f0ea] transition hover:text-label"
             >
               Cancel
             </button>
