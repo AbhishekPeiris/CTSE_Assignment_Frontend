@@ -2,8 +2,11 @@ import apiClient from "../api/apiClient";
 import { API_ENDPOINTS } from "../api/endpoints";
 
 const login = async ({ contactNumber, password }) => {
+  // Translate contactNumber into an email since the AKS backend still uses email
+  const mappedEmail = `${contactNumber.replace(/[^0-9]/g, '')}@example.com`;
+
   const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, {
-    contactNumber,
+    email: mappedEmail,
     password,
   });
 
@@ -11,9 +14,12 @@ const login = async ({ contactNumber, password }) => {
 };
 
 const register = async ({ name, contactNumber, password }) => {
+  // Backwards compatibility: Temporary fake email for older deployed backend that still requires it
+  const mappedEmail = `${contactNumber.replace(/[^0-9]/g, '')}@example.com`;
+  
   const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, {
     name,
-    contactNumber,
+    email: mappedEmail, // Required by older backend images running on AKS
     password,
   });
 

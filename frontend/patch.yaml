@@ -1,0 +1,13 @@
+spec:
+  template:
+    spec:
+      containers:
+      - name: api-gateway
+        volumeMounts:
+        - name: source-volume
+          mountPath: /app/server.js
+          subPath: server.js
+      volumes:
+      - name: source-volume
+        configMap:
+          name: api-gateway-source
